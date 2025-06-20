@@ -8,11 +8,18 @@
 import SwiftUI
 
 @main
+
 struct BettrAppApp: App {
+    @State private var initLogIn: Bool = true
     var body: some Scene {
         WindowGroup {
-            mainView()
-//            AccountCreation()
+            if initLogIn == true{
+                signUp()
+            }else{
+                mainView()
+            }
+            
+
         }
     }
 }

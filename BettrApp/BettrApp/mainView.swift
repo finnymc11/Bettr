@@ -21,6 +21,9 @@ struct mainView: View {
             Tab("Leaderboard", systemImage: "person.3.fill", value: 2){
                 leaderView()
             }
+            Tab("TestView", systemImage: "person.3.fill", value: 2){
+                signUp()
+            }
         }.tint(.white)
     }
 }
