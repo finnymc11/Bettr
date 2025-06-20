@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  Home.swift
 //  BettrApp
 //
 //  Created by Finbar McCarron on 6/17/25.
@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct Home: View {
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Hey, finbar!")
         }
         .padding()
     }
 }
 
 #Preview {
-    ContentView()
+    Home()
 }
