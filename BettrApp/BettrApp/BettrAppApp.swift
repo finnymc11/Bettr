@@ -11,8 +11,8 @@ import SwiftUI
 struct BettrAppApp: App {
     var body: some Scene {
         WindowGroup {
-            Home()
-            AccountCreation()
+            mainView()
+//            AccountCreation()
         }
     }
 }
