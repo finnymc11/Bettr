@@ -4,6 +4,19 @@
 //
 //  Created by Finbar McCarron on 6/21/25.
 //
+ // @State private var initLogIn: Bool = true
+ //    var body: some Scene {
+ //        WindowGroup {
+ //            if initLogIn == true{
+ //                signUp()
+ //            }else{
+ //                mainView()
+ //            }
+            
+
+ //        }
+ //    }
+
 
 import SwiftUI
 import FirebaseCore
