@@ -1,5 +1,5 @@
 //
-//  signUp.swift
+//  SignUp.swift
 //  BettrApp
 //
 //  Created by CJ Balmaceda on 6/20/25.
@@ -10,7 +10,7 @@ import SwiftUI
 
 
 
-struct signUp: View{
+struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
     var body: some View{
         VStack{

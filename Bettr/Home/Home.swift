@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  Home.swift
 //  BettrApp
 //
 //  Created by Finbar McCarron on 6/17/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct Home: View {
     @State private var selection: Int = 0
     var body: some View {
         TabView(selection: $selection){
@@ -87,5 +87,5 @@ extension View{
 
 
 #Preview {
-    HomeView()
+    Home()
 }
