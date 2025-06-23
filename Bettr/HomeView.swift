@@ -34,11 +34,7 @@ struct customStyle: ViewModifier{
 }
 
 
-extension View{
-    func cStyle1() -> some View{
-        self.modifier(customStyle())
-    }
-}
+
 
 
 struct homeView: View{
@@ -82,7 +78,7 @@ extension View{
         self.modifier(customStyle())
     }
     func uniformButt() -> some View{
-        self.modifier(BettrApp.buttonStyle())
+        self.modifier(Bettr.buttonStyle())
     }
     
 }

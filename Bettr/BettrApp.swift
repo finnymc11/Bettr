@@ -50,7 +50,7 @@ struct BettrApp: App {
                         }
                     }
             case .auth:
-                AuthView(currentScreen: $currentScreen)
+                signUp(currentScreen: $currentScreen)
             case .home:
                 HomeView()
             }

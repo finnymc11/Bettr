@@ -11,6 +11,7 @@ import SwiftUI
 
 
 struct signUp: View{
+    @Binding var currentScreen: BettrApp.Screen
     var body: some View{
         VStack{
             HStack{
@@ -25,17 +26,17 @@ struct signUp: View{
            
             Button(action: {
                 print("signup butt")
+                currentScreen = .home
             }){
                 Text("Sign Up")
                     .frame(maxWidth: .infinity)
             }.uniformButt().padding(.top, 200)
             Button("Already Have an account? Log In"){
                 print("log in")
+                currentScreen = .home
             }.foregroundColor(.white)
         }.cStyle1()
     }
 }
 
-#Preview {
-    signUp()
-}
+
