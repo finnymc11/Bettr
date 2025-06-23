@@ -4,32 +4,12 @@
 //
 //  Created by CJ Balmaceda on 6/20/25.
 //
-
+//
+import Foundation
 import SwiftUI
 
-struct homeView: View{
-    var body: some View{
-        VStack{
-            Text("home").foregroundStyle(.white)
-        }.cStyle1()
-    }
-}
 
-struct statsView: View{
-    var body: some View{
-        VStack{
-            Text("bruh").foregroundStyle(.white)
-        }.cStyle1()
-    }
-}
-struct leaderView: View{
-    var body: some View{
-        VStack{
-            Text("bruh").foregroundStyle(.white)
-        }.cStyle1()
-    }
-}
-
+//style for tabview
 struct customStyle: ViewModifier{
     func body(content: Content) -> some View{
         content
@@ -38,6 +18,7 @@ struct customStyle: ViewModifier{
     }
 }
 
+//capsule button
 struct buttonStyle: ViewModifier{
     func body(content: Content) -> some View{
         content
@@ -51,12 +32,41 @@ struct buttonStyle: ViewModifier{
     }
 }
 
+//Text styles
+struct textStyle: ViewModifier{
+    func body(content: Content) -> some View{
+        content
+            .foregroundColor(.white)
+            .font(.system(size: 60,weight: .heavy,design: .default))
+            .tracking(2.5)
+           
+    }
+    
+}
+
+struct textStyleRegular: ViewModifier{
+    func body(content: Content) -> some View{
+        content
+            .foregroundColor(.white)
+            .font(.system(size: 40,weight: .thin, design: .default))
+            .tracking(2.5)
+           
+    }
+}
+
+
 extension View{
     func cStyle1() -> some View{
         self.modifier(customStyle())
     }
     func uniformButt() -> some View{
         self.modifier(Bettr.buttonStyle())
+    }
+    func textStyleBig() -> some View{
+        self.modifier(textStyle())
+    }
+    func textStyleReg()->some View{
+        self.modifier(textStyleRegular())
     }
     
 }

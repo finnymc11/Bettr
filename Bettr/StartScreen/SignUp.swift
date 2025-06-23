@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+
+
 struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
     var body: some View{
@@ -20,7 +22,7 @@ struct SignUp: View{
                     .font(.system(size: 40, weight: .semibold, design: .default))
                     
                 Spacer()
-            }.padding(.bottom, 100)
+            }
            
             Button(action: {
                 print("signup butt")
@@ -33,6 +35,9 @@ struct SignUp: View{
                 print("log in")
                 currentScreen = .home
             }.foregroundColor(.white)
-        }.cStyle1()
+        }.cStyle1().padding(.horizontal, 10)
+        
     }
 }
+
+

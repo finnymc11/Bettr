@@ -24,6 +24,30 @@ struct Home: View {
     }
 }
 
+struct homeView: View{
+    var body: some View{
+        VStack{
+            Text("home").foregroundStyle(.white)
+        }.cStyle1()
+    }
+}
+
+struct statsView: View{
+    var body: some View{
+        VStack{
+            Text("bruh").foregroundStyle(.white)
+        }.cStyle1()
+    }
+}
+struct leaderView: View{
+    var body: some View{
+        VStack{
+            Text("bruh").foregroundStyle(.white)
+        }.cStyle1()
+    }
+}
+
+
 #Preview {
     Home()
 }
