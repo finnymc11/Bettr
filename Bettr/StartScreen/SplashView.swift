@@ -12,7 +12,7 @@ struct SplashView: View {
         ZStack {
             Color.black.ignoresSafeArea()
             VStack {
-                Text("Welcome to My App")
+                Text("Bettr.")
                     .font(.largeTitle)
                     .foregroundColor(.white)
                 ProgressView()
@@ -23,3 +23,8 @@ struct SplashView: View {
         }
     }
 }
+
+#Preview {
+    SplashView()
+}
+
