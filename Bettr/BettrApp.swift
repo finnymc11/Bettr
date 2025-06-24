@@ -22,7 +22,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct BettrApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var currentScreen: Screen = .splash
-    @State private var isSignedIn: Bool = true
+    @State private var isSignedIn: Bool = false
     
     enum Screen {
         case splash, signUp, home
