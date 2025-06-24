@@ -4,56 +4,51 @@
 //
 //  Created by Finbar McCarron on 6/21/25.
 //
- // @State private var initLogIn: Bool = true
- //    var body: some Scene {
- //        WindowGroup {
- //            if initLogIn == true{
- //                signUp()
- //            }else{
- //                mainView()
- //            }
-            
-
- //        }
- //    }
 
 
 import SwiftUI
 import FirebaseCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        
+        return true
+    }
 }
 
 @main
 struct BettrApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var currentScreen: Screen = .splash
-
+    @State private var isSignedIn: Bool = true
+    
     enum Screen {
-        case splash, auth, home
+        case splash, signUp, home
     }
-
+    
     var body: some Scene {
         WindowGroup {
-            switch currentScreen {
-            case .splash:
-                SplashView()
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                            currentScreen = .auth
-                        }
-                    }
-            case .auth:
-                signUp(currentScreen: $currentScreen)
-            case .home:
-                HomeView()
+            ZStack{
+                Color.black.ignoresSafeArea()
+                if isSignedIn {
+                       Home()
+                   } else if currentScreen == .signUp {
+                       SignUp(currentScreen: $currentScreen).transition(.opacity)
+                       
+                   } else {
+                       SplashView()
+                           .onAppear {
+                               DispatchQueue.main.asyncAfter(deadline: .now() + 9) {
+                                   withAnimation(.easeInOut(duration: 1.0)) {
+                                       currentScreen = .signUp
+                                   }
+                               }
+                           }.transition(.opacity)
+                   }
             }
+            .animation(.easeIn(duration: 2.0), value: currentScreen)
         }
     }
 }

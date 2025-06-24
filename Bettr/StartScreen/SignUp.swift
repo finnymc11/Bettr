@@ -1,5 +1,5 @@
 //
-//  signUp.swift
+//  SignUp.swift
 //  BettrApp
 //
 //  Created by CJ Balmaceda on 6/20/25.
@@ -10,7 +10,7 @@ import SwiftUI
 
 
 
-struct signUp: View{
+struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
     var body: some View{
         VStack{
@@ -22,7 +22,7 @@ struct signUp: View{
                     .font(.system(size: 40, weight: .semibold, design: .default))
                     
                 Spacer()
-            }.padding(.bottom, 100)
+            }
            
             Button(action: {
                 print("signup butt")
@@ -35,7 +35,8 @@ struct signUp: View{
                 print("log in")
                 currentScreen = .home
             }.foregroundColor(.white)
-        }.cStyle1()
+        }.cStyle1().padding(.horizontal, 10)
+        
     }
 }
 
