@@ -4,13 +4,13 @@
 //
 //  Created by CJ Balmaceda on 6/20/25.
 //
-//
+
 import Foundation
 import SwiftUI
 
 
 //style for tabview
-struct customStyle: ViewModifier{
+struct cStyle1: ViewModifier{
     func body(content: Content) -> some View{
         content
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -57,7 +57,7 @@ struct textStyleRegular: ViewModifier{
 
 extension View{
     func cStyle1() -> some View{
-        self.modifier(customStyle())
+        self.modifier(Bettr.cStyle1())
     }
     func uniformButt() -> some View{
         self.modifier(Bettr.buttonStyle())
@@ -68,5 +68,7 @@ extension View{
     func textStyleReg()->some View{
         self.modifier(textStyleRegular())
     }
-    
+    func borderedTField()->some View{
+        self.modifier(borderedTextField())
+    }
 }
