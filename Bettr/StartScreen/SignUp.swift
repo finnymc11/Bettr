@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-
-
 struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
     
@@ -43,5 +41,3 @@ struct SignUp: View{
         
     }
 }
-
-

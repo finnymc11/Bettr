@@ -5,7 +5,6 @@
 //  Created by Finbar McCarron on 6/21/25.
 //
 
-
 import SwiftUI
 import FirebaseCore
 
