@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-
-
 struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
     var body: some View{
@@ -18,7 +16,6 @@ struct SignUp: View{
                 Text("Are you ready to be better?")
                     .foregroundColor(.white)
                     .padding(.trailing)
-//                    .font(.largeTitle)
                     .font(.system(size: 40, weight: .semibold, design: .default))
                     
                 Spacer()
@@ -39,5 +36,3 @@ struct SignUp: View{
         
     }
 }
-
-
