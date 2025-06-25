@@ -22,33 +22,49 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct BettrApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var currentScreen: Screen = .splash
-    @State private var isSignedIn: Bool = false
+    //    @State private var isSignedIn: Bool = false
+    @StateObject var auth = fireAuth()
     
     enum Screen {
-        case splash, signUp, home
+        case splash, signUp, home, createAccount
     }
     
     var body: some Scene {
         WindowGroup {
             ZStack{
                 Color.black.ignoresSafeArea()
-                if isSignedIn {
-                       Home()
-                   } else if currentScreen == .signUp {
-                       SignUp(currentScreen: $currentScreen).transition(.opacity)
-                       
-                   } else {
-                       SplashView()
-                           .onAppear {
-                               DispatchQueue.main.asyncAfter(deadline: .now() + 9) {
-                                   withAnimation(.easeInOut(duration: 1.0)) {
-                                       currentScreen = .signUp
-                                   }
-                               }
-                           }.transition(.opacity)
-                   }
+                if auth.user != nil {
+                    Home()
+                } else {
+                    switch currentScreen {
+                    case .splash:
+                        SplashView()
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 9) {
+                                    withAnimation {
+                                        currentScreen = .signUp
+                                    }
+                                }
+                            }
+                            .transition(.opacity)
+                        
+                    case .signUp:
+                        SignUp(currentScreen: $currentScreen)
+                            .environmentObject(auth)
+                            .transition(.opacity)
+                        
+                    case .createAccount:
+                        createUser(currentScreen: $currentScreen)
+                            .environmentObject(auth)
+                            .transition(.opacity)
+                        
+                    case .home:
+                        Home()
+                    }
+                }
             }
-            .animation(.easeIn(duration: 2.0), value: currentScreen)
+            .animation(.easeIn(duration: 0.5), value: currentScreen)
+            .environmentObject(auth)
         }
     }
 }
