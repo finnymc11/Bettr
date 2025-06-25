@@ -13,10 +13,7 @@ struct SplashView: View {
     @State private var accountability = false
     @State private var friends = false
     var onComplete: (() -> Void)?
-    
-    
     var body: some View {
-        
         ZStack{
             Text("BETTR.")
                 .textStyleBig()
@@ -25,7 +22,6 @@ struct SplashView: View {
                     dispatchWithAnimation($showBettr)
                     hideText($showBettr, delay: 1.5, effectDuration: 1.0)
                     dispatchWithAnimation($showBeBettr,delay: 2.5, effectDuration: 1.0)
-                    
                 }.padding(.leading,20);
             if showBeBettr{
                 HStack{
@@ -36,8 +32,6 @@ struct SplashView: View {
                         if accountability{
                             Text("Monitor Your Habits.").textStyleReg().onAppear(){
                                 dispatchWithAnimation($friends, delay: 2.1, effectDuration: 1.0)
-                                
-                                
                             }
                         }
                         if friends{
@@ -46,20 +40,11 @@ struct SplashView: View {
                                                onComplete?()
                                            }
                             }
-                            
                         }
-                        
-                        
-                        
-                        
-                        
                     }
                     Spacer()
                 }.padding(.horizontal, 10)
-                
-                
             }
-            
         }.cStyle1()
     }
 }
@@ -87,8 +72,6 @@ func hideText(_ binding: Binding<Bool>, delay: TimeInterval = 0.0, effectDuratio
     }
     
 }
-
-
 
 #Preview {
     SplashView()

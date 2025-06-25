@@ -57,7 +57,6 @@ struct homeView: View {
                         .font(.system(size: 20))
                 }
                 Spacer()
-                
                 // Bottom overlay
                 VStack {
                     Text("You're spending about 99% less screen time than the average person")
@@ -69,7 +68,6 @@ struct homeView: View {
                         .font(.system(size: 20))
                         .padding(.bottom, 50)
                 }
-                
             }.cStyle1()
             .navigationTitle("Bettr.")
             .navigationBarTitleDisplayMode(.inline)
