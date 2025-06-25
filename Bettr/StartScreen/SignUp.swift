@@ -10,20 +10,25 @@ import SwiftUI
 
 struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
+    
     var body: some View{
         VStack{
             HStack{
                 Text("Are you ready to be better?")
                     .foregroundColor(.white)
                     .padding(.trailing)
+                //                    .font(.largeTitle)
                     .font(.system(size: 40, weight: .semibold, design: .default))
-                    
+                
                 Spacer()
             }
-           
+            
             Button(action: {
                 print("signup butt")
-                currentScreen = .home
+                withAnimation{
+                    currentScreen = .createAccount
+                }
+                
             }){
                 Text("Sign Up")
                     .frame(maxWidth: .infinity)

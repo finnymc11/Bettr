@@ -68,5 +68,7 @@ extension View{
     func textStyleReg()->some View{
         self.modifier(textStyleRegular())
     }
-    
+    func borderedTField()->some View{
+        self.modifier(borderedTextField())
+    }
 }
