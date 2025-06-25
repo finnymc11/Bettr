@@ -12,6 +12,7 @@
 		928A712A2E08B69A005E93FE /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 928A71292E08B69A005E93FE /* FirebaseAnalyticsCore */; };
 		928A712C2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport in Frameworks */ = {isa = PBXBuildFile; productRef = 928A712B2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport */; };
 		928A712E2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 928A712D2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion */; };
+		FBFF4C172E0C373900807938 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = FBFF4C162E0C373900807938 /* FirebaseAuth */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				928A712C2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport in Frameworks */,
+				FBFF4C172E0C373900807938 /* FirebaseAuth in Frameworks */,
 				928A71282E08B69A005E93FE /* FirebaseAnalytics in Frameworks */,
 				928A712E2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				928A712A2E08B69A005E93FE /* FirebaseAnalyticsCore in Frameworks */,
@@ -130,6 +132,7 @@
 				928A71292E08B69A005E93FE /* FirebaseAnalyticsCore */,
 				928A712B2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport */,
 				928A712D2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion */,
+				FBFF4C162E0C373900807938 /* FirebaseAuth */,
 			);
 			productName = Bettr;
 			productReference = 928A70CB2E0753E2005E93FE /* Bettr.app */;
@@ -651,6 +654,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 928A71242E08B69A005E93FE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalyticsOnDeviceConversion;
+		};
+		FBFF4C162E0C373900807938 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebaseAuth;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
