@@ -12,12 +12,6 @@
 		928A712A2E08B69A005E93FE /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 928A71292E08B69A005E93FE /* FirebaseAnalyticsCore */; };
 		928A712C2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport in Frameworks */ = {isa = PBXBuildFile; productRef = 928A712B2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport */; };
 		928A712E2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 928A712D2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion */; };
-		FBBC3A102E0B237000462383 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = FBBC3A0F2E0B237000462383 /* FirebaseAuth */; };
-		FBBC3A122E0B237000462383 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = FBBC3A112E0B237000462383 /* FirebaseCore */; };
-		FBBC3A142E0B237000462383 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = FBBC3A132E0B237000462383 /* FirebaseDatabase */; };
-		FBBC3A162E0B237000462383 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = FBBC3A152E0B237000462383 /* FirebaseFirestore */; };
-		FBBC3A182E0B237000462383 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = FBBC3A172E0B237000462383 /* FirebaseStorage */; };
-
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,14 +61,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				928A712C2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport in Frameworks */,
-				FBBC3A102E0B237000462383 /* FirebaseAuth in Frameworks */,
 				928A71282E08B69A005E93FE /* FirebaseAnalytics in Frameworks */,
-				FBBC3A182E0B237000462383 /* FirebaseStorage in Frameworks */,
 				928A712E2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
-				FBBC3A122E0B237000462383 /* FirebaseCore in Frameworks */,
-				FBBC3A162E0B237000462383 /* FirebaseFirestore in Frameworks */,
 				928A712A2E08B69A005E93FE /* FirebaseAnalyticsCore in Frameworks */,
-				FBBC3A142E0B237000462383 /* FirebaseDatabase in Frameworks */,
 				928A71262E08B69A005E93FE /* FirebaseAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,11 +72,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				92E7609C2E0AE71D00815040 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
-				92E760982E0AE71D00815040 /* FirebaseAnalytics in Frameworks */,
-				92E7609E2E0AE71D00815040 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
-				92E7609A2E0AE71D00815040 /* FirebaseAnalyticsCore in Frameworks */,
-				92E760962E0AE71D00815040 /* FirebaseAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,11 +79,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				92E760A62E0AE72F00815040 /* FirebaseAnalyticsIdentitySupport in Frameworks */,
-				92E760A22E0AE72F00815040 /* FirebaseAnalytics in Frameworks */,
-				92E760A82E0AE72F00815040 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
-				92E760A42E0AE72F00815040 /* FirebaseAnalyticsCore in Frameworks */,
-				92E760A02E0AE72F00815040 /* FirebaseAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,11 +130,6 @@
 				928A71292E08B69A005E93FE /* FirebaseAnalyticsCore */,
 				928A712B2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport */,
 				928A712D2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion */,
-				FBBC3A0F2E0B237000462383 /* FirebaseAuth */,
-				FBBC3A112E0B237000462383 /* FirebaseCore */,
-				FBBC3A132E0B237000462383 /* FirebaseDatabase */,
-				FBBC3A152E0B237000462383 /* FirebaseFirestore */,
-				FBBC3A172E0B237000462383 /* FirebaseStorage */,
 			);
 			productName = Bettr;
 			productReference = 928A70CB2E0753E2005E93FE /* Bettr.app */;
@@ -179,11 +153,6 @@
 			);
 			name = BettrTests;
 			packageProductDependencies = (
-				92E760952E0AE71D00815040 /* FirebaseAI */,
-				92E760972E0AE71D00815040 /* FirebaseAnalytics */,
-				92E760992E0AE71D00815040 /* FirebaseAnalyticsCore */,
-				92E7609B2E0AE71D00815040 /* FirebaseAnalyticsIdentitySupport */,
-				92E7609D2E0AE71D00815040 /* FirebaseAnalyticsOnDeviceConversion */,
 			);
 			productName = BettrTests;
 			productReference = 928A70D92E0753E3005E93FE /* BettrTests.xctest */;
@@ -207,11 +176,6 @@
 			);
 			name = BettrUITests;
 			packageProductDependencies = (
-				92E7609F2E0AE72F00815040 /* FirebaseAI */,
-				92E760A12E0AE72F00815040 /* FirebaseAnalytics */,
-				92E760A32E0AE72F00815040 /* FirebaseAnalyticsCore */,
-				92E760A52E0AE72F00815040 /* FirebaseAnalyticsIdentitySupport */,
-				92E760A72E0AE72F00815040 /* FirebaseAnalyticsOnDeviceConversion */,
 			);
 			productName = BettrUITests;
 			productReference = 928A70E32E0753E3005E93FE /* BettrUITests.xctest */;
@@ -687,26 +651,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 928A71242E08B69A005E93FE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalyticsOnDeviceConversion;
-		};
-		FBBC3A0F2E0B237000462383 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FirebaseAuth;
-		};
-		FBBC3A112E0B237000462383 /* FirebaseCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FirebaseCore;
-		};
-		FBBC3A132E0B237000462383 /* FirebaseDatabase */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FirebaseDatabase;
-		};
-		FBBC3A152E0B237000462383 /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FirebaseFirestore;
-		};
-		FBBC3A172E0B237000462383 /* FirebaseStorage */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
