@@ -5,7 +5,6 @@
 //  Created by Finbar McCarron on 6/21/25.
 //
 
-
 import SwiftUI
 import FirebaseCore
 
@@ -22,7 +21,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct BettrApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var currentScreen: Screen = .splash
-    @State private var isSignedIn: Bool = true
+    @State private var isSignedIn: Bool = false
     
     enum Screen {
         case splash, signUp, home
