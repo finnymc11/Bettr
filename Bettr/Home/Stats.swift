@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DeviceActivity
 
 struct statsView: View{
     var body: some View{
@@ -19,6 +20,7 @@ struct statsView: View{
                         .foregroundColor(.white)
                         .font(.system(size: 40))
                         .padding(.bottom, 400)
+//                    ScreenTimeReportView()
                 }.cStyle1()
             }.cStyle1()
             .toolbar {
@@ -45,3 +47,17 @@ struct statsView: View{
 #Preview {
     statsView()
 }
+
+//struct ScreenTimeReportView: View {
+//    @State private var context = DeviceActivityReport.Context(rawValue: "DailyReport")
+//    @State private var filter = DeviceActivityFilter(
+//        segment: .daily(during: Calendar.current.dateInterval(of: .day, for: .now)!),
+//        users: .all,
+//        devices: .init([.iPhone])
+//    )
+//
+//    var body: some View {
+//        DeviceActivityReport(context, filter: filter)
+//            .frame(maxWidth: .infinity, maxHeight: .infinity)
+//    }
+//}
