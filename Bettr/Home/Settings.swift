@@ -9,6 +9,7 @@ import SwiftUI
 
 
 
+
 struct SettingsView: View {
     @Binding var currentScreen: BettrApp.Screen
     @EnvironmentObject var auth: fireAuth
@@ -19,28 +20,28 @@ struct SettingsView: View {
                     Section(header: Text("Account")){
                         Button("Logout"){
                             auth.signOut()
-
-                                print("Current Screen: \(currentScreen)")
+                            
+                            print("Current Screen: \(currentScreen)")
                         }.foregroundStyle(Color.black)
                             .navigationTitle("Settings")
                             .navigationBarTitleDisplayMode(.inline)
                     }.toolbar(.hidden, for:.tabBar)
                 }
             }
-            
-            
         }
-        
-        //        VStack{
-//            Text("Settings Page")
-//                .font(.title)
-//                .navigationTitle("Settings")
-//                .navigationBarTitleDisplayMode(.inline)
-//        }.toolbar(.hidden, for: .tabBar)
-        
+        }
     }
-}
-
-#Preview {
-    Home()
-}
+    
+    //        VStack{
+    //            Text("Settings Page")
+    //                .font(.title)
+    //                .navigationTitle("Settings")
+    //                .navigationBarTitleDisplayMode(.inline)
+    //        }.toolbar(.hidden, for: .tabBar)
+    
+    
+    
+    
+    #Preview {
+        Home()
+    }

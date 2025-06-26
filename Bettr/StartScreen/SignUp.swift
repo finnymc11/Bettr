@@ -28,6 +28,7 @@ struct SignUp: View{
                 print("signup butt")
                 withAnimation{
                     currentScreen = .createAccount
+
                 }
                 
             }){

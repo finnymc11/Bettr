@@ -21,18 +21,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct BettrApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var currentScreen: Screen = .splash
+
         
     @StateObject var auth = fireAuth()
     
     
     enum Screen {
-        case splash, signUp, home, createAccount, settings
+        case splash, signUp, home, createAccount, settings,screenTime
     }
     
     var body: some Scene {
         WindowGroup {
             ZStack{
                 Color.black.ignoresSafeArea()
+
                 if auth.user != nil {
                     Home()
                 } else {
@@ -40,37 +42,45 @@ struct BettrApp: App {
                     case .splash:
                         SplashView()
                             .onAppear {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 9) {
-                                    withAnimation {
-                                        currentScreen = .signUp
+                                if auth.user != nil {
+                                    currentScreen = .home
+                                } else {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 9) {
+                                        withAnimation {
+                                            currentScreen = .signUp
+                                        }
                                     }
                                 }
                             }
                             .transition(.opacity)
-                        
+
                     case .signUp:
                         SignUp(currentScreen: $currentScreen)
                             .environmentObject(auth)
                             .transition(.opacity)
-                        
+
                     case .createAccount:
-                        createUser(currentScreen: $currentScreen)
-//                            .environmentObject(auth)
+                        AccountCreation(currentScreen: $currentScreen)
                             .transition(.opacity)
-                        
+
+                    case .screenTime:
+                        ScreenTime(currentScreen: $currentScreen)
+                            .transition(.opacity)
+
                     case .home:
                         Home()
+
                     case .settings:
                         SettingsView(currentScreen: $currentScreen)
-//                            .environmentObject(auth)
                     }
                 }
             }
             .animation(.easeIn(duration: 0.5), value: currentScreen)
             .environmentObject(auth)
-            .onChange(of: auth.user) { 
-                withAnimation { currentScreen = .signUp }
-
+            .onChange(of: auth.user) {
+                withAnimation {
+                    currentScreen = .signUp
+                }
             }
         }
     }

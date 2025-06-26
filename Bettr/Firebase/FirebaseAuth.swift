@@ -51,6 +51,7 @@ class fireAuth: ObservableObject{
             }
         }
     }
+
     func signOut(){
         do{
             try Auth.auth().signOut()

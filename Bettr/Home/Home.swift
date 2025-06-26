@@ -25,7 +25,10 @@ struct Home: View {
 }
 
 struct homeView: View {
+
     @State private var currentScreen: BettrApp.Screen = .home
+
+
     init() {
         let appearance = UINavigationBarAppearance()
         //appearance.configureWithOpaqueBackground() // makes it solid
@@ -41,7 +44,10 @@ struct homeView: View {
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
+
 //    @Binding var currentScreen: BettrApp.Screen
+
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -59,7 +65,9 @@ struct homeView: View {
                         .font(.system(size: 20))
                 }
                 Spacer()
-                
+
+
+
                 // Bottom overlay
                 VStack {
                     Text("You're spending about 99% less screen time than the average person")
@@ -71,15 +79,20 @@ struct homeView: View {
                         .font(.system(size: 20))
                         .padding(.bottom, 50)
                 }
-                
+
             }.cStyle1()
             .navigationTitle("Bettr.")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
+
                     NavigationLink(destination: SettingsView(currentScreen: $currentScreen)) {
                         Image(systemName: "gear")
                             .font(.system(size: 20))
+                        //                    NavigationLink(destination: SettingsView()) {
+                        //
+                        //                        
+                        //                    }
                     }
                 }
             }
