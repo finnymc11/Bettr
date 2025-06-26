@@ -25,6 +25,7 @@ struct Home: View {
 }
 
 struct homeView: View {
+    @State private var currentScreen: BettrApp.Screen = .home
     init() {
         let appearance = UINavigationBarAppearance()
         //appearance.configureWithOpaqueBackground() // makes it solid
@@ -73,7 +74,7 @@ struct homeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingsView()) {
+                    NavigationLink(destination: SettingsView(currentScreen: $currentScreen)) {
                         Image(systemName: "gear")
                             .font(.system(size: 20))
                     }

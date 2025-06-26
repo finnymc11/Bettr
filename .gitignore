@@ -1,6 +1,17 @@
-<<<<<<< HEAD
+# macOS
 .DS_Store
+
+# Xcode
+*.xcuserdata
 *.xcuserstate
-=======
->>>>>>> 9daad23743e464f6ec01f2250a9c22d48d870006
-xcuserdata/
+*.xcworkspacedata
+DerivedData/
+build/
+*.idea/
+
+# SwiftPM
+.swiftpm/
+Package.resolved
+
+# Logs
+*.log
