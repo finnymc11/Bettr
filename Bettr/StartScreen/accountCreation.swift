@@ -1,5 +1,9 @@
 //
+<<<<<<< HEAD
 //  AccountCreation.swift
+=======
+//  accountCreation.swift
+>>>>>>> test1
 //  Bettr
 //
 //  Created by CJ Balmaceda on 6/24/25.
@@ -8,14 +12,25 @@
 import Foundation
 import SwiftUI
 
+<<<<<<< HEAD
 struct AccountCreation: View{
     @EnvironmentObject var auth: fireAuth
     @Binding var currentScreen: BettrApp.Screen
     @State private var errorMessage: String? = nil
+=======
+struct createUser: View{
+    @EnvironmentObject var auth: fireAuth
+    @Binding var currentScreen: BettrApp.Screen
+    
+>>>>>>> test1
     @State private var email: String = ""
     @State private var passWord: String = ""
     var body: some View{
         VStack{
+<<<<<<< HEAD
+=======
+            
+>>>>>>> test1
             Text("Let's Create an Account").foregroundStyle(Color.white).font(.system(size: 30, design: .default)).padding(.top, 50)
             Spacer()
             TextField(
@@ -32,6 +47,7 @@ struct AccountCreation: View{
             .borderedTField()
             .padding()
             
+<<<<<<< HEAD
             if let error = errorMessage {
                 Text(error)
                     .foregroundColor(.red)
@@ -62,10 +78,32 @@ struct AccountCreation: View{
             }
             .uniformButt()
             .padding(.bottom, 20)
+=======
+            Spacer()
+            Button(action:{
+                print("Create account butt")
+                auth.createUser(email: email, password: passWord) { success, error in
+                                    if success {
+                                        print("Login successful")
+                                        
+                                    } else {
+                                        print("Error: \(error?.localizedDescription ?? "Unknown error")")
+                                    }
+                                }
+            }){
+                Text("Create account").frame(maxWidth: .infinity)
+            }.uniformButt().padding(.bottom, 100)
+            
+            
+>>>>>>> test1
         }.cStyle1()
     }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> test1
 struct borderedTextField: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -76,4 +114,13 @@ struct borderedTextField: ViewModifier {
             )
             .foregroundStyle(Color.white)
     }
+<<<<<<< HEAD
 }
+=======
+    
+}
+
+
+//
+
+>>>>>>> test1

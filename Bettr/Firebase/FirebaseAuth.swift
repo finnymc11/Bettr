@@ -51,6 +51,7 @@ class fireAuth: ObservableObject{
             }
         }
     }
+<<<<<<< HEAD
 
     func signOut(){
         do{
@@ -60,4 +61,6 @@ class fireAuth: ObservableObject{
         }
         
     }
+=======
+>>>>>>> test1
 }
