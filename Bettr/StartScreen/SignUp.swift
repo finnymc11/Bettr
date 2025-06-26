@@ -10,8 +10,6 @@ import SwiftUI
 
 struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
-//    @State private var currentScreen:BettrApp.Screen = .signUp
-    
     var body: some View{
         VStack{
             HStack{
@@ -27,8 +25,7 @@ struct SignUp: View{
             Button(action: {
                 print("signup butt")
                 withAnimation{
-                    currentScreen = .createAccount
-
+                    currentScreen = .accountCreation
                 }
                 
             }){
