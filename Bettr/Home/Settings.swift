@@ -7,9 +7,6 @@
 
 import SwiftUI
 
-
-
-
 struct SettingsView: View {
     @Binding var currentScreen: BettrApp.Screen
     @EnvironmentObject var auth: fireAuth
@@ -29,19 +26,9 @@ struct SettingsView: View {
                 }
             }
         }
-        }
     }
-    
-    //        VStack{
-    //            Text("Settings Page")
-    //                .font(.title)
-    //                .navigationTitle("Settings")
-    //                .navigationBarTitleDisplayMode(.inline)
-    //        }.toolbar(.hidden, for: .tabBar)
-    
-    
-    
-    
-    #Preview {
-        Home()
-    }
+}
+
+#Preview {
+    Home()
+}
