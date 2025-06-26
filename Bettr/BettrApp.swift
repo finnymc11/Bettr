@@ -24,7 +24,7 @@ struct BettrApp: App {
     @StateObject var auth = fireAuth()
     
     enum Screen {
-        case splash, signUp, home, accountCreation, screenTime
+        case splash, signUp, home, accountCreation, settings, screenTime
     }
     
     var body: some Scene {
@@ -48,21 +48,28 @@ struct BettrApp: App {
                         .transition(.opacity)
                 case .signUp:
                     SignUp(currentScreen: $currentScreen)
-                        .environmentObject(auth)
+                        //.environmentObject(auth)
                         .transition(.opacity)
                 case .accountCreation:
                     AccountCreation(currentScreen: $currentScreen)
-                        .environmentObject(auth)
                         .transition(.opacity)
                 case .screenTime:
                     ScreenTime(currentScreen: $currentScreen)
                         .transition(.opacity)
                 case .home:
                     Home()
+                case .settings:
+                    SettingsView(currentScreen: $currentScreen)
+                }
                 }
             }
             .animation(.easeIn(duration: 0.5), value: currentScreen)
             .environmentObject(auth)
+            .onChange(of: auth.user) {
+                withAnimation {
+                    currentScreen = .signUp
+                }
+            }
         }
     }
 }
