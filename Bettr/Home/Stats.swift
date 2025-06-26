@@ -6,10 +6,7 @@
 //
 
 import SwiftUI
-
-
 import DeviceActivity
-
 
 struct statsView: View{
     var body: some View{
@@ -23,10 +20,7 @@ struct statsView: View{
                         .foregroundColor(.white)
                         .font(.system(size: 40))
                         .padding(.bottom, 400)
-
-
 //                    ScreenTimeReportView()
-
                 }.cStyle1()
             }.cStyle1()
             .toolbar {
@@ -67,4 +61,3 @@ struct statsView: View{
 //            .frame(maxWidth: .infinity, maxHeight: .infinity)
 //    }
 //}
-
