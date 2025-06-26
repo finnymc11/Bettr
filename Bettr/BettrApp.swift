@@ -61,7 +61,6 @@ struct BettrApp: App {
                 case .settings:
                     SettingsView(currentScreen: $currentScreen)
                 }
-                }
             }
             .animation(.easeIn(duration: 0.5), value: currentScreen)
             .environmentObject(auth)
@@ -72,3 +71,4 @@ struct BettrApp: App {
             }
         }
     }
+}

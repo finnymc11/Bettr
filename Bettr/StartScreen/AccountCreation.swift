@@ -65,15 +65,3 @@ struct AccountCreation: View{
         }.cStyle1()
     }
 }
-
-struct borderedTextField: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .padding(10)
-            .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.gray, lineWidth: 0.5)
-            )
-            .foregroundStyle(Color.white)
-    }
-}

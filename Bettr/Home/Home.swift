@@ -25,6 +25,7 @@ struct Home: View {
 }
 
 struct homeView: View {
+    @State private var currentScreen: BettrApp.Screen = .home
     init() {
         let appearance = UINavigationBarAppearance()
         //appearance.configureWithOpaqueBackground() // makes it solid
