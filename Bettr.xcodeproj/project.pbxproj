@@ -12,7 +12,6 @@
 		928A712A2E08B69A005E93FE /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 928A71292E08B69A005E93FE /* FirebaseAnalyticsCore */; };
 		928A712C2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport in Frameworks */ = {isa = PBXBuildFile; productRef = 928A712B2E08B69A005E93FE /* FirebaseAnalyticsIdentitySupport */; };
 		928A712E2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 928A712D2E08B69A005E93FE /* FirebaseAnalyticsOnDeviceConversion */; };
-		928A712E2E08B69A005E93FE /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 928A712D2E08B69A005E93FE /* FirebaseAuth */; };
 		FBBC3A102E0B237000462383 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = FBBC3A0F2E0B237000462383 /* FirebaseAuth */; };
 		FBBC3A122E0B237000462383 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = FBBC3A112E0B237000462383 /* FirebaseCore */; };
 		FBBC3A142E0B237000462383 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = FBBC3A132E0B237000462383 /* FirebaseDatabase */; };
