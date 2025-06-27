@@ -33,14 +33,14 @@ struct BettrApp: App {
         WindowGroup {
             ZStack{
                 Color.black.ignoresSafeArea()
-                if  auth.user != nil {
+                if  auth.user != nil && currentScreen != .screenTime {
                     Home()
                 }else{
                     switch currentScreen {
                     case .splash:
                         SplashView(){
                             withAnimation{
-                                currentScreen = .screenTime
+                                currentScreen = .signUp
                             }
 //                            .onAppear {
 //                                if auth.user != nil {

@@ -12,6 +12,7 @@ import DeviceActivity
 struct ScreenTime: View {
     let center = AuthorizationCenter.shared
     @Binding var currentScreen: BettrApp.Screen
+    @State private var authorized: Bool = false
     @State private var authorizationStatus = "Requesting..."
     @State private var showAlert = false
     var body: some View {
@@ -38,7 +39,7 @@ struct ScreenTime: View {
                     requestAuthorization()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                         withAnimation{
-                            currentScreen = .signUp
+                            currentScreen = .home
                             showAlert = false
                         }
                     }
@@ -54,6 +55,7 @@ struct ScreenTime: View {
                 let center = UNUserNotificationCenter.current()
                 do {
                     let granted = try await center.requestAuthorization(options: [.alert, .badge, .sound])
+                    
                     print("Authorization granted: \(granted)")
                 } catch {
                     print("Authorization failed: \(error)")

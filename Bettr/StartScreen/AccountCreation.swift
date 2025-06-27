@@ -51,6 +51,7 @@ struct AccountCreation: View{
                 auth.createUser(email: email, password: passWord) { success, error in
                     if success {
                         print("Login successful")
+                        
                         currentScreen = .screenTime
                     } else {
                         errorMessage = error?.localizedDescription ?? "Unknown error occurred."

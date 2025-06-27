@@ -40,3 +40,7 @@ struct SignUp: View{
         
     }
 }
+
+//#Preview {
+//    SignUp(currentScreen:.constant(BettrApp.Screen.screenTime) )
+//}
