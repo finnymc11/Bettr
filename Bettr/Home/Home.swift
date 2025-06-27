@@ -26,6 +26,7 @@ struct Home: View {
 
 struct homeView: View {
     @State private var currentScreen: BettrApp.Screen = .home
+    @State private var showHome = true
     init() {
         let appearance = UINavigationBarAppearance()
         
@@ -40,6 +41,9 @@ struct homeView: View {
     }
     var body: some View {
         NavigationStack {
+            ZStack{
+                
+            }
             VStack(spacing: 0) {
                 Spacer()
                 // Main content
@@ -78,6 +82,7 @@ struct homeView: View {
                 }
             }
         }
+        
     }
 }
 

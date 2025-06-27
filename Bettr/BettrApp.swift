@@ -69,8 +69,10 @@ struct BettrApp: App {
                             .transition(.opacity)
                     case .home:
                         Home()
+                            .transition(.opacity)
                     case .settings:
                         SettingsView(currentScreen: $currentScreen)
+                            .transition(.opacity)
                     }
                     
                 }
