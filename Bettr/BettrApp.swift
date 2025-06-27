@@ -76,16 +76,16 @@ struct BettrApp: App {
                 
             } .animation(.easeIn(duration: 0.5), value: currentScreen)
                 .environmentObject(auth)
-//                .onChange(of: auth.user) {
-//                    
-////                        currentScreen = .signUp
-//                        if auth.user == nil && currentScreen == .splash {
-//                            withAnimation(){
-//                                currentScreen = .screenTime
-//                            }
-//                            
-//                    }
-//                }
+                .onChange(of: auth.user) {
+                    
+//                        currentScreen = .signUp
+                        if auth.user == nil  {
+                            withAnimation(){
+                                currentScreen = .signUp
+                            }
+                            
+                    }
+                }
             
         }
     }
