@@ -23,6 +23,7 @@ struct BettrApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var currentScreen: Screen = .splash
     @StateObject var auth = fireAuth()
+    @State private var showScreenTime = true
     
     enum Screen {
         case splash, signUp, home, accountCreation, settings, screenTime
@@ -34,27 +35,23 @@ struct BettrApp: App {
                 Color.black.ignoresSafeArea()
                 if  auth.user != nil {
                     Home()
-//                    logoScreen().onAppear(){
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                            withAnimation {
-//                                currentScreen = .home
-//                            }
-//                        }
-//                    }
                 }else{
                     switch currentScreen {
                     case .splash:
-                        SplashView()
-                            .onAppear {
-                                if auth.user != nil {
-                                    currentScreen = .home
-                                } else {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
-                                        withAnimation {
-                                            currentScreen = .signUp
-                                        }
-                                    }
-                                }
+                        SplashView(){
+                            withAnimation{
+                                currentScreen = .screenTime
+                            }
+//                            .onAppear {
+//                                if auth.user != nil {
+//                                    currentScreen = .home
+//                                } else {
+//                                    DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
+//                                        withAnimation {
+//                                            currentScreen = .screenTime
+//                                        }
+//                                    }
+//                                }
                             }
                             .transition(.opacity)
                     case .signUp:
@@ -79,11 +76,16 @@ struct BettrApp: App {
                 
             } .animation(.easeIn(duration: 0.5), value: currentScreen)
                 .environmentObject(auth)
-                .onChange(of: auth.user) {
-                    withAnimation {
-                        currentScreen = .signUp
-                    }
-                }
+//                .onChange(of: auth.user) {
+//                    
+////                        currentScreen = .signUp
+//                        if auth.user == nil && currentScreen == .splash {
+//                            withAnimation(){
+//                                currentScreen = .screenTime
+//                            }
+//                            
+//                    }
+//                }
             
         }
     }

@@ -13,6 +13,7 @@ struct ScreenTime: View {
     let center = AuthorizationCenter.shared
     @Binding var currentScreen: BettrApp.Screen
     @State private var authorizationStatus = "Requesting..."
+    @State private var showAlert = false
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -24,21 +25,42 @@ struct ScreenTime: View {
                     Text("Your sensitive data")
                         .foregroundColor(.white)
                         .font(.system(size: 20))
+                   
+                           
                 }
-                .cStyle1()
             }
             .cStyle1()
             .onAppear {
-                Task{
-                    do {
-                        try await center.requestAuthorization(for: .individual)
-                        authorizationStatus = "Authorization granted ✅"
-                        currentScreen = .home
-                    } catch {
-                        authorizationStatus = "Authorization failed ❌: \(error.localizedDescription)"
+                showAlert = true
+
+            }.alert("Allow Bettr to access your Screen Time data?", isPresented: $showAlert) {
+                Button("Allow"){
+                    requestAuthorization()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                        withAnimation{
+                            currentScreen = .signUp
+                        }
                     }
                 }
+                Button("Cancel", role: .cancel){}
+            } message: {
+                Text("Bettr. needs access to your Screen Time data to function properly.")
             }
         }
     }
+    func requestAuthorization() {
+            Task {
+                let center = UNUserNotificationCenter.current()
+                do {
+                    let granted = try await center.requestAuthorization(options: [.alert, .badge, .sound])
+                    print("Authorization granted: \(granted)")
+                } catch {
+                    print("Authorization failed: \(error)")
+                }
+            }
+        }
+}
+
+#Preview {
+    ScreenTime(currentScreen: .constant(BettrApp.Screen.screenTime))
 }
