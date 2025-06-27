@@ -39,6 +39,7 @@ struct ScreenTime: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                         withAnimation{
                             currentScreen = .signUp
+                            showAlert = false
                         }
                     }
                 }
