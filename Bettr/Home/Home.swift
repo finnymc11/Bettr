@@ -28,16 +28,13 @@ struct homeView: View {
     @State private var currentScreen: BettrApp.Screen = .home
     init() {
         let appearance = UINavigationBarAppearance()
-        //appearance.configureWithOpaqueBackground() // makes it solid
+        
         appearance.backgroundColor = UIColor.black
         appearance.titleTextAttributes = [
             .foregroundColor: UIColor.white,
             .font: UIFont.systemFont(ofSize: 40, weight: .heavy)
         ]
-//        appearance.largeTitleTextAttributes = [
-//                .foregroundColor: UIColor.white,
-//                .font: UIFont.systemFont(ofSize: 34, weight: .heavy)
-//        ]
+
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }

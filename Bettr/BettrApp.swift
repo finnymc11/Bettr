@@ -19,6 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct BettrApp: App {
+    @State private var showSplash = true
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var currentScreen: Screen = .splash
     @StateObject var auth = fireAuth()
@@ -31,44 +32,57 @@ struct BettrApp: App {
         WindowGroup {
             ZStack{
                 Color.black.ignoresSafeArea()
-                switch currentScreen {
-                case .splash:
-                    SplashView()
-                        .onAppear {
-                            if auth.user != nil {
-                                currentScreen = .home
-                            } else {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 9) {
-                                    withAnimation {
-                                        currentScreen = .signUp
+                if  auth.user != nil {
+                    Home()
+//                    logoScreen().onAppear(){
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                            withAnimation {
+//                                currentScreen = .home
+//                            }
+//                        }
+//                    }
+                }else{
+                    switch currentScreen {
+                    case .splash:
+                        SplashView()
+                            .onAppear {
+                                if auth.user != nil {
+                                    currentScreen = .home
+                                } else {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
+                                        withAnimation {
+                                            currentScreen = .signUp
+                                        }
                                     }
                                 }
                             }
-                        }
-                        .transition(.opacity)
-                case .signUp:
-                    SignUp(currentScreen: $currentScreen)
+                            .transition(.opacity)
+                    case .signUp:
+                        SignUp(currentScreen: $currentScreen)
                         //.environmentObject(auth)
-                        .transition(.opacity)
-                case .accountCreation:
-                    AccountCreation(currentScreen: $currentScreen)
-                        .transition(.opacity)
-                case .screenTime:
-                    ScreenTime(currentScreen: $currentScreen)
-                        .transition(.opacity)
-                case .home:
-                    Home()
-                case .settings:
-                    SettingsView(currentScreen: $currentScreen)
+                            .transition(.opacity)
+                    case .accountCreation:
+                        AccountCreation(currentScreen: $currentScreen)
+                            .transition(.opacity)
+                    case .screenTime:
+                        ScreenTime(currentScreen: $currentScreen)
+                            .transition(.opacity)
+                    case .home:
+                        Home()
+                    case .settings:
+                        SettingsView(currentScreen: $currentScreen)
+                    }
+                    
                 }
-            }
-            .animation(.easeIn(duration: 0.5), value: currentScreen)
-            .environmentObject(auth)
-            .onChange(of: auth.user) {
-                withAnimation {
-                    currentScreen = .signUp
+                
+            } .animation(.easeIn(duration: 0.5), value: currentScreen)
+                .environmentObject(auth)
+                .onChange(of: auth.user) {
+                    withAnimation {
+                        currentScreen = .signUp
+                    }
                 }
-            }
+            
         }
     }
 }

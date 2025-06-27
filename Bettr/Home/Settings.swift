@@ -16,8 +16,10 @@ struct SettingsView: View {
                 List{
                     Section(header: Text("Account")){
                         Button("Logout"){
-                            auth.signOut()
                             
+//                            currentScreen = .splash
+                            auth.signOut()
+//                            print("User: \(auth.user?.email ?? "No User")")
                             print("Current Screen: \(currentScreen)")
                         }.foregroundStyle(Color.black)
                             .navigationTitle("Settings")
