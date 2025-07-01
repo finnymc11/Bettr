@@ -33,7 +33,7 @@ struct BettrApp: App {
         WindowGroup {
             ZStack{
                 Color.black.ignoresSafeArea()
-                if  auth.user != nil && currentScreen != .screenTime {
+                if  /*auth.user != nil && currentScreen != .screenTime*/ currentScreen == .home {
                     Home()
                 }else{
                     switch currentScreen {
@@ -42,34 +42,25 @@ struct BettrApp: App {
                             withAnimation{
                                 currentScreen = .signUp
                             }
-//                            .onAppear {
-//                                if auth.user != nil {
-//                                    currentScreen = .home
-//                                } else {
-//                                    DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
-//                                        withAnimation {
-//                                            currentScreen = .screenTime
-//                                        }
-//                                    }
-//                                }
-                            }
-                            .transition(.opacity)
+                            
+                        }
+//                        .transition(.opacity)
                     case .signUp:
                         SignUp(currentScreen: $currentScreen)
                         //.environmentObject(auth)
-                            .transition(.opacity)
+//                            .transition(.opacity)
                     case .accountCreation:
                         AccountCreation(currentScreen: $currentScreen)
-                            .transition(.opacity)
+//                            .transition(.opacity)
                     case .screenTime:
                         ScreenTime(currentScreen: $currentScreen)
-                            .transition(.opacity)
+//                            .transition(.opacity)
                     case .home:
                         Home()
-                            .transition(.opacity)
+//                            .transition(.opacity)
                     case .settings:
                         SettingsView(currentScreen: $currentScreen)
-                            .transition(.opacity)
+//                            .transition(.opacity)
                     }
                     
                 }
@@ -78,12 +69,12 @@ struct BettrApp: App {
                 .environmentObject(auth)
                 .onChange(of: auth.user) {
                     
-//                        currentScreen = .signUp
-                        if auth.user == nil  {
-                            withAnimation(){
-                                currentScreen = .signUp
-                            }
-                            
+                    //                        currentScreen = .signUp
+                    if auth.user == nil  {
+                        withAnimation(){
+                            currentScreen = .signUp
+                        }
+                        
                     }
                 }
             

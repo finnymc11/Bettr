@@ -24,9 +24,13 @@ struct SignUp: View{
             
             Button(action: {
                 print("signup butt")
-                withAnimation{
-                    currentScreen = .accountCreation
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                    withAnimation{
+                        
+                        currentScreen = .accountCreation
+                    }
                 }
+               
                 
             }){
                 Text("Sign Up")

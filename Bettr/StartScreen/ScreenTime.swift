@@ -10,6 +10,7 @@ import FamilyControls
 import DeviceActivity
 
 struct ScreenTime: View {
+    var onComplete: (() -> Void)?
     let center = AuthorizationCenter.shared
     @Binding var currentScreen: BettrApp.Screen
     @State private var authorized: Bool = false
@@ -38,9 +39,11 @@ struct ScreenTime: View {
                 Button("Allow"){
                     requestAuthorization()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                        showAlert=false
+                        onComplete?()
                         withAnimation{
                             currentScreen = .home
-                            showAlert = false
+//                            showAlert = false
                         }
                     }
                 }
@@ -48,7 +51,7 @@ struct ScreenTime: View {
             } message: {
                 Text("Bettr. needs access to your Screen Time data to function properly.")
             }
-        }
+        }.animation(.easeIn(duration: 0.5), value: currentScreen)
     }
     func requestAuthorization() {
             Task {
