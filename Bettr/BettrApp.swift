@@ -26,7 +26,7 @@ struct BettrApp: App {
     @State private var showScreenTime = true
     
     enum Screen {
-        case splash, signUp, home, accountCreation, settings, screenTime
+        case splash, signUp, home, accountCreation, settings, screenTime, logIn
     }
     
     var body: some Scene {
@@ -60,6 +60,8 @@ struct BettrApp: App {
 //                            .transition(.opacity)
                     case .settings:
                         SettingsView(currentScreen: $currentScreen)
+                    case .logIn:
+                        logInView(currentScreen: $currentScreen)
 //                            .transition(.opacity)
                     }
                     

@@ -18,6 +18,7 @@ struct SignUp: View{
                     .padding(.trailing)
                 //                    .font(.largeTitle)
                     .font(.system(size: 40, weight: .semibold, design: .default))
+                    .padding(.horizontal, 10)
                 
                 Spacer()
             }
@@ -38,13 +39,16 @@ struct SignUp: View{
             }.uniformButt().padding(.top, 200)
             Button("Already Have an account? Log In"){
                 print("log in")
-                currentScreen = .home
-            }.foregroundColor(.white)
-        }.cStyle1().padding(.horizontal, 10)
+                currentScreen = .logIn
+                
+            }
+            .foregroundColor(.white)
+            .padding(.horizontal, 10)
+        }.cStyle1()
         
     }
 }
 
-//#Preview {
-//    SignUp(currentScreen:.constant(BettrApp.Screen.screenTime) )
-//}
+#Preview {
+    SignUp(currentScreen:.constant(BettrApp.Screen.screenTime) )
+}

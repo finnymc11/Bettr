@@ -16,7 +16,9 @@ struct AccountCreation: View{
     @State private var passWord: String = ""
     var body: some View{
         VStack{
-            Text("Let's Create an Account").foregroundStyle(Color.white).font(.system(size: 30, design: .default)).padding(.top, 50)
+            Text("Let's create an Account")
+                
+                .foregroundStyle(Color.white).font(.system(size: 35,weight: .thin, design: .default)).padding(.top, 50)
             Spacer()
             TextField(
                 "Email",
@@ -24,7 +26,11 @@ struct AccountCreation: View{
                 prompt: Text("Email").foregroundStyle(Color.white.opacity(0.7))
             ).borderedTField()
                 .padding()
-            TextField(
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
+
+            
+            SecureField(
                 "Password",
                 text: $passWord,
                 prompt: Text("Password").foregroundStyle(Color.white.opacity(0.7))
@@ -50,7 +56,7 @@ struct AccountCreation: View{
                 }
                 auth.createUser(email: email, password: passWord) { success, error in
                     if success {
-                        print("Login successful")
+                        print("account creation successful")
                         withAnimation{
                             currentScreen = .screenTime
                         }
@@ -63,8 +69,13 @@ struct AccountCreation: View{
                 Text("Create account")
                     .frame(maxWidth: .infinity)
             }
-            .uniformButt()
-            .padding(.bottom, 20)
+        
+            .uniformButt().padding(.horizontal,30)
+            .padding(.bottom, 100)
         }.cStyle1()
     }
+}
+
+#Preview{
+    AccountCreation(currentScreen: .constant(BettrApp.Screen.accountCreation))
 }
