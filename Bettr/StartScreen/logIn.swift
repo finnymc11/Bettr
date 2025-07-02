@@ -16,8 +16,19 @@ struct logInView : View{
     @State private var passWord: String = ""
     var body: some View{
         VStack{
+            HStack{
+                Button(action: {
+                    print("bruh")
+                    currentScreen = .signUp
+                }){
+                    Text(.init(systemName: "chevron.left")).font(.system(size: 30)).foregroundStyle(Color.white)
+                }.padding()
+                Spacer()
+                
+            }
             Text("Welcome Back")
-                .foregroundStyle(Color.white).font(.system(size: 35,weight: .thin, design: .default)).padding(.top, 50)
+                .foregroundStyle(Color.white).font(.system(size: 35,weight: .thin, design: .default)).frame(maxWidth: .infinity, alignment: .center)
+            
             Spacer()
             TextField(
                 "Email",

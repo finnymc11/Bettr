@@ -16,9 +16,18 @@ struct AccountCreation: View{
     @State private var passWord: String = ""
     var body: some View{
         VStack{
+            HStack{
+                Button(action: {
+                    print("account back")
+                    currentScreen = .signUp
+                }){
+                    Text(.init(systemName: "chevron.left")).font(.system(size: 30)).foregroundStyle(Color.white)
+                } .padding()
+                Spacer()
+               
+            }
             Text("Let's create an Account")
-                
-                .foregroundStyle(Color.white).font(.system(size: 35,weight: .thin, design: .default)).padding(.top, 50)
+                .foregroundStyle(Color.white).font(.system(size: 35,weight: .thin, design: .default)).frame(maxWidth: .infinity, alignment: .center)
             Spacer()
             TextField(
                 "Email",
