@@ -71,7 +71,6 @@ struct BettrApp: App {
                 .environmentObject(auth)
                 .onChange(of: auth.user) {
                     
-                    //                        currentScreen = .signUp
                     if auth.user == nil  {
                         withAnimation(){
                             currentScreen = .signUp

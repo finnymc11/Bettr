@@ -24,7 +24,6 @@ struct logInView : View{
                     Text(.init(systemName: "chevron.left")).font(.system(size: 30)).foregroundStyle(Color.white)
                 }.padding()
                 Spacer()
-                
             }
             Text("Welcome Back")
                 .foregroundStyle(Color.white).font(.system(size: 35,weight: .thin, design: .default)).frame(maxWidth: .infinity, alignment: .center)

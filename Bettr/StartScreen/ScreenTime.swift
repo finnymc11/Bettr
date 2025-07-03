@@ -51,7 +51,7 @@ struct ScreenTime: View {
             } message: {
                 Text("Bettr. needs access to your Screen Time data to function properly.")
             }
-        }.animation(.easeIn(duration: 0.5), value: currentScreen)
+        }/*.animation(.easeIn(duration: 0.5), value: currentScreen)*/.preferredColorScheme(.dark)
     }
     func requestAuthorization() {
             Task {
