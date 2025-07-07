@@ -65,6 +65,7 @@ struct GroupCard: View {
             VStack(alignment: .leading) {
                 Text(name)
                     .fontWeight(.semibold)
+                    .foregroundStyle(Color.black)
                 Text("\(members) member\(members == 1 ? "" : "s")")
                     .font(.caption)
                     .foregroundColor(.gray)

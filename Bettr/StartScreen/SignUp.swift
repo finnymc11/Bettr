@@ -44,7 +44,7 @@ struct SignUp: View{
             }
             .foregroundColor(.white)
             .padding(.horizontal, 10)
-        }.cStyle1()
+        }.cStyle1().preferredColorScheme(.dark)
         
     }
 }

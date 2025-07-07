@@ -54,17 +54,16 @@ struct ScreenTime: View {
         }/*.animation(.easeIn(duration: 0.5), value: currentScreen)*/.preferredColorScheme(.dark)
     }
     func requestAuthorization() {
-            Task {
-                let center = UNUserNotificationCenter.current()
-                do {
-                    let granted = try await center.requestAuthorization(options: [.alert, .badge, .sound])
-                    
-                    print("Authorization granted: \(granted)")
-                } catch {
-                    print("Authorization failed: \(error)")
-                }
+        print("bruh")
+        Task{
+            do{
+                try await center.requestAuthorization(for: .individual)
+                print("Authorized")
+            }catch{
+                print("Error: \(error)")
             }
         }
+    }
 }
 
 #Preview {

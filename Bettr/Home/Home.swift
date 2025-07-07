@@ -134,6 +134,7 @@ struct homeView: View {
                     }
                 }
             }
+            
         }.preferredColorScheme(.dark)
     }
 }
