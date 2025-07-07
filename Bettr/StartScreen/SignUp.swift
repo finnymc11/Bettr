@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
+    
     var body: some View{
         VStack{
             HStack{

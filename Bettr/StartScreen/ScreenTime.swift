@@ -11,6 +11,7 @@ import DeviceActivity
 
 struct ScreenTime: View {
     var onComplete: (() -> Void)?
+    @EnvironmentObject var auth: fireAuth
     let center = AuthorizationCenter.shared
     @Binding var currentScreen: BettrApp.Screen
     @State private var authorized: Bool = false
@@ -24,9 +25,9 @@ struct ScreenTime: View {
                         .foregroundColor(.white)
                         .font(.system(size: 40))
                     Spacer()
-                    Text("Your sensitive data")
-                        .foregroundColor(.white)
-                        .font(.system(size: 20))
+//                    Text("Your sensitive data")
+//                        .foregroundColor(.white)
+//                        .font(.system(size: 20))
                    
                            
                 }
@@ -38,16 +39,16 @@ struct ScreenTime: View {
             }.alert("Allow Bettr to access your Screen Time data?", isPresented: $showAlert) {
                 Button("Allow"){
                     requestAuthorization()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                        showAlert=false
-                        onComplete?()
-                        withAnimation{
-                            currentScreen = .home
-//                            showAlert = false
-                        }
+                   
+                }
+                Button("Cancel", role: .cancel){
+                    
+                    auth.user = nil
+                    showAlert = false
+                    withAnimation{
+                        currentScreen = .signUp
                     }
                 }
-                Button("Cancel", role: .cancel){}
             } message: {
                 Text("Bettr. needs access to your Screen Time data to function properly.")
             }
@@ -58,6 +59,14 @@ struct ScreenTime: View {
         Task{
             do{
                 try await center.requestAuthorization(for: .individual)
+               
+                    showAlert=false
+                    onComplete?()
+                    withAnimation{
+                        currentScreen = .home
+//                            showAlert = false
+                    }
+
                 print("Authorized")
             }catch{
                 print("Error: \(error)")
