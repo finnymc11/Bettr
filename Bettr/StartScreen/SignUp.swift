@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SignUp: View{
     @Binding var currentScreen: BettrApp.Screen
+    
     var body: some View{
         VStack{
             HStack{
@@ -44,7 +45,7 @@ struct SignUp: View{
             }
             .foregroundColor(.white)
             .padding(.horizontal, 10)
-        }.cStyle1()
+        }.cStyle1().preferredColorScheme(.dark)
         
     }
 }

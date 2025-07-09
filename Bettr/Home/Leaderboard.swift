@@ -179,6 +179,18 @@ struct CreateGroupView: View {
                         dismiss()
                     }
                 }
+        HStack {
+            Circle()
+                .fill(Color.blue)
+                .frame(width: 40, height: 40)
+                .overlay(Text("🙌"))
+            VStack(alignment: .leading) {
+                Text(name)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.black)
+                Text("\(members) member\(members == 1 ? "" : "s")")
+                    .font(.caption)
+                    .foregroundColor(.gray)
             }
         }
         .navigationTitle("Create Group")

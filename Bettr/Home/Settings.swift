@@ -20,7 +20,6 @@ struct SettingsView: View {
                         Button("Log Out"){
                             auth.signOut()
                             print("Current Screen: \(currentScreen)")
-//                            currentScreen = .splash
                         }.foregroundStyle(Color.white).frame(maxWidth: .infinity).padding(10)
                             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.gray, lineWidth: 1)).frame(maxWidth: .infinity)
                            
