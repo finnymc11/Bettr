@@ -7,6 +7,21 @@
 
 import SwiftUI
 import FirebaseCore
+import UIKit
+import Firebase
+import FirebaseFirestore
+
+class SearchBarFocusDelegate: NSObject, UISearchBarDelegate {
+    var onFocus: () -> Void
+
+    init(onFocus: @escaping () -> Void) {
+        self.onFocus = onFocus
+    }
+
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        onFocus()
+    }
+}
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
