@@ -128,12 +128,9 @@ struct leaderView: View {
                 }
             }
             .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
-//            .sheet(isPresented: $showingCreateGroup) {
-//                CreateGroupView(viewModel: viewModel)
-//            }
             .sheet(isPresented: $showingCreateGroup) {
                 // 👇 Pass a callback to add new group to myGroups
-                CreateGroupView(viewModel: viewModel) { newGroup in
+                CreateGroup(viewModel: viewModel) { newGroup in
                     myGroups.append(newGroup)
                 }
             }
@@ -151,11 +148,10 @@ struct leaderView: View {
     }
 }
 
-struct CreateGroupView: View {
+struct CreateGroup: View {
     @Environment(\.dismiss) var dismiss
     @State private var groupName: String = ""
     @ObservedObject var viewModel: GroupViewModel
-    
     var onGroupCreated: (String) -> Void
 
     var body: some View {
@@ -174,28 +170,16 @@ struct CreateGroupView: View {
                     if let error = error {
                         print("Error adding group: \(error.localizedDescription)")
                     } else {
-                        // 👇 Callback to add to myGroups
                         onGroupCreated(groupName)
                         dismiss()
                     }
                 }
-        HStack {
-            Circle()
-                .fill(Color.blue)
-                .frame(width: 40, height: 40)
-                .overlay(Text("🙌"))
-            VStack(alignment: .leading) {
-                Text(name)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(Color.black)
-                Text("\(members) member\(members == 1 ? "" : "s")")
-                    .font(.caption)
-                    .foregroundColor(.gray)
             }
         }
         .navigationTitle("Create Group")
     }
 }
+
 
 struct GroupDetail: View {
     var groupName: String
