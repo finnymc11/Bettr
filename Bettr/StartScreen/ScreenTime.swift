@@ -10,9 +10,13 @@ import FamilyControls
 import DeviceActivity
 
 struct ScreenTime: View {
+    var onComplete: (() -> Void)?
+    @EnvironmentObject var auth: fireAuth
     let center = AuthorizationCenter.shared
     @Binding var currentScreen: BettrApp.Screen
+    @State private var authorized: Bool = false
     @State private var authorizationStatus = "Requesting..."
+    @State private var showAlert = false
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -21,24 +25,56 @@ struct ScreenTime: View {
                         .foregroundColor(.white)
                         .font(.system(size: 40))
                     Spacer()
-                    Text("Your sensitive data")
-                        .foregroundColor(.white)
-                        .font(.system(size: 20))
+//                    Text("Your sensitive data")
+//                        .foregroundColor(.white)
+//                        .font(.system(size: 20))
+                   
+                           
                 }
-                .cStyle1()
             }
             .cStyle1()
             .onAppear {
-                Task{
-                    do {
-                        try await center.requestAuthorization(for: .individual)
-                        authorizationStatus = "Authorization granted ✅"
-                        currentScreen = .home
-                    } catch {
-                        authorizationStatus = "Authorization failed ❌: \(error.localizedDescription)"
+                showAlert = true
+
+            }.alert("Allow Bettr to access your Screen Time data?", isPresented: $showAlert) {
+                Button("Allow"){
+                    requestAuthorization()
+                   
+                }
+                Button("Cancel", role: .cancel){
+                    
+                    auth.user = nil
+                    showAlert = false
+                    withAnimation{
+                        currentScreen = .signUp
                     }
                 }
+            } message: {
+                Text("Bettr. needs access to your Screen Time data to function properly.")
+            }
+        }/*.animation(.easeIn(duration: 0.5), value: currentScreen)*/.preferredColorScheme(.dark)
+    }
+    func requestAuthorization() {
+        print("bruh")
+        Task{
+            do{
+                try await center.requestAuthorization(for: .individual)
+               
+                    showAlert=false
+                    onComplete?()
+                    withAnimation{
+                        currentScreen = .home
+//                            showAlert = false
+                    }
+
+                print("Authorized")
+            }catch{
+                print("Error: \(error)")
             }
         }
     }
+}
+
+#Preview {
+    ScreenTime(currentScreen: .constant(BettrApp.Screen.screenTime))
 }

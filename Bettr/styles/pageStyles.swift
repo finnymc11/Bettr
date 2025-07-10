@@ -68,6 +68,30 @@ struct borderedTextField: ViewModifier {
 }
 
 
+func dispatchWithAnimation(_ binding: Binding<Bool>, delay: TimeInterval = 0.0, effectDuration: TimeInterval = 0.3) {
+    if delay > 0.0 {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            withAnimation (.easeIn(duration: effectDuration)){
+                binding.wrappedValue = true
+            }
+        }
+    } else {
+        withAnimation (.easeInOut(duration: effectDuration)){
+            binding.wrappedValue = true
+        }
+    }
+}
+
+func hideText(_ binding: Binding<Bool>, delay: TimeInterval = 0.0, effectDuration: TimeInterval = 0.3) {
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+        withAnimation (.easeIn(duration: effectDuration)){
+            binding.wrappedValue = false
+        }
+    }
+    
+}
+
 extension View{
     func cStyle1() -> some View{
         self.modifier(Bettr.cStyle1())
@@ -85,3 +109,4 @@ extension View{
         self.modifier(borderedTextField())
     }
 }
+

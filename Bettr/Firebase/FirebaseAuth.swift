@@ -23,6 +23,7 @@ class fireAuth: ObservableObject{
     deinit{
         if let handle = authStateListener {
             Auth.auth().removeStateDidChangeListener(handle)
+            authStateListener = nil
         }
     }
     
@@ -55,6 +56,7 @@ class fireAuth: ObservableObject{
     func signOut(){
         do{
             try Auth.auth().signOut()
+            self.user = nil
         }catch let signOutError as NSError{
             print("Error signing out: \(signOutError.localizedDescription)")
         }

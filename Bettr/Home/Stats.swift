@@ -48,16 +48,3 @@ struct statsView: View{
     statsView()
 }
 
-//struct ScreenTimeReportView: View {
-//    @State private var context = DeviceActivityReport.Context(rawValue: "DailyReport")
-//    @State private var filter = DeviceActivityFilter(
-//        segment: .daily(during: Calendar.current.dateInterval(of: .day, for: .now)!),
-//        users: .all,
-//        devices: .init([.iPhone])
-//    )
-//
-//    var body: some View {
-//        DeviceActivityReport(context, filter: filter)
-//            .frame(maxWidth: .infinity, maxHeight: .infinity)
-//    }
-//}

@@ -1,14 +1,14 @@
 //
-//  AccountCreation.swift
+//  logIn.swift
 //  Bettr
 //
-//  Created by CJ Balmaceda on 6/24/25.
+//  Created by CJ Balmaceda on 6/27/25.
 //
 
 import Foundation
 import SwiftUI
 
-struct AccountCreation: View{
+struct logInView : View{
     @EnvironmentObject var auth: fireAuth
     @Binding var currentScreen: BettrApp.Screen
     @State private var errorMessage: String? = nil
@@ -18,16 +18,16 @@ struct AccountCreation: View{
         VStack{
             HStack{
                 Button(action: {
-                    print("account back")
+                    print("bruh")
                     currentScreen = .signUp
                 }){
                     Text(.init(systemName: "chevron.left")).font(.system(size: 30)).foregroundStyle(Color.white)
-                } .padding()
+                }.padding()
                 Spacer()
-               
             }
-            Text("Let's create an Account")
+            Text("Welcome Back")
                 .foregroundStyle(Color.white).font(.system(size: 35,weight: .thin, design: .default)).frame(maxWidth: .infinity, alignment: .center)
+            
             Spacer()
             TextField(
                 "Email",
@@ -58,16 +58,12 @@ struct AccountCreation: View{
             Spacer()
             Button(action: {
                 print("Create account butt")
-                // 🚫 Basic password validation
-                if passWord.count < 8 || !passWord.contains(where: { $0.isNumber }) {
-                    errorMessage = "Password must be at least 8 characters and contain a number."
-                    return
-                }
-                auth.createUser(email: email, password: passWord) { success, error in
+               
+                auth.signIn(email: email, password: passWord) { success, error in
                     if success {
-                        print("account creation successful")
+                        print("logIn  successful")
                         withAnimation{
-                            currentScreen = .screenTime
+                            currentScreen = .home
                         }
                         
                     } else {
@@ -75,16 +71,17 @@ struct AccountCreation: View{
                     }
                 }
             }) {
-                Text("Create account")
+                Text("Log In")
                     .frame(maxWidth: .infinity)
+
+
             }
-        
             .uniformButt().padding(.horizontal,30)
             .padding(.bottom, 100)
         }.cStyle1()
     }
 }
 
-#Preview{
-    AccountCreation(currentScreen: .constant(BettrApp.Screen.accountCreation))
+#Preview {
+    logInView(currentScreen: .constant(BettrApp.Screen.logIn))
 }
