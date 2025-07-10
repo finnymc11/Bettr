@@ -12,6 +12,7 @@ struct AccountCreation: View{
     @EnvironmentObject var auth: fireAuth
     @Binding var currentScreen: BettrApp.Screen
     @State private var errorMessage: String? = nil
+    @State private var username: String = ""
     @State private var email: String = ""
     @State private var passWord: String = ""
     var body: some View{
@@ -29,6 +30,16 @@ struct AccountCreation: View{
             Text("Let's create an Account")
                 .foregroundStyle(Color.white).font(.system(size: 35,weight: .thin, design: .default)).frame(maxWidth: .infinity, alignment: .center)
             Spacer()
+            
+            TextField(
+                "Username",
+                text: $username,
+                prompt: Text("Username").foregroundStyle(Color.white.opacity(0.7))
+            ).borderedTField()
+                .padding()
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
+            
             TextField(
                 "Email",
                 text: $email,
@@ -63,7 +74,7 @@ struct AccountCreation: View{
                     errorMessage = "Password must be at least 8 characters and contain a number."
                     return
                 }
-                auth.createUser(email: email, password: passWord) { success, error in
+                auth.createUser(email: email, password: passWord, username: username) { success, error in
                     if success {
                         print("account creation successful")
                         withAnimation{
