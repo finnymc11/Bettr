@@ -19,8 +19,11 @@ class ScreenTimeModel: ObservableObject {
     static let shared = ScreenTimeModel()
     private let store = ManagedSettingsStore()
     private let center = DeviceActivityCenter()
+    private let selectionKey = "appSelectionKey"
     
-    private init(){}
+    private init(){
+        loadSelection()
+    }
     
     var appSelection = FamilyActivitySelection() {
         willSet{
@@ -41,8 +44,31 @@ class ScreenTimeModel: ObservableObject {
                 .specific(
                     categories
                 )
+            saveSelection()
         }
     }
+    
+    func saveSelection(){
+        do{
+            let data = try JSONEncoder().encode(appSelection)
+            UserDefaults.standard.set(data, forKey: selectionKey)
+        }catch{
+            print("Error saving selection: \(error.localizedDescription)")
+        }
+    }
+    
+    func loadSelection(){
+        guard let data = UserDefaults.standard.data(forKey: selectionKey) else {return}
+        do{
+            let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
+            DispatchQueue.main.async {
+                self.appSelection = selection
+            }
+        }catch{
+            print("error loading selection: \(error.localizedDescription)")
+        }
+    }
+    
     func initActivityMonitor(){
         let schedule = DeviceActivitySchedule(
             intervalStart: DateComponents(hour: 0, minute: 0),
