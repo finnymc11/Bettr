@@ -22,9 +22,9 @@ struct Home: View {
                     Label("Home", systemImage: "house.fill")
                 }.tag(1)
 
-            LazyView(leaderView())
+            LazyView(friendView())
                 .tabItem {
-                    Label("Leaderboard", systemImage: "person.3.fill")
+                    Label("Friends", systemImage: "person.3.fill")
                 }.tag(2)
         }
         .tint(.white)
