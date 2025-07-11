@@ -16,7 +16,6 @@ class fireAuth: ObservableObject {
     @Published var friendRequests: [SearchResultItem] = []
     @Published var friends: [SearchResultItem] = []
 
-    
     private var authStateListener: AuthStateDidChangeListenerHandle?
     private var listener: ListenerRegistration?
     
@@ -194,36 +193,6 @@ class fireAuth: ObservableObject {
         }
     }
 
-//    func acceptFriendRequest(fromUID: String) {
-//        guard let currentUID = user?.uid else { return }
-//
-//        let db = Firestore.firestore()
-//
-//        // Remove pending request
-//        let query = db.collection("friendships")
-//            .whereField("from", isEqualTo: fromUID)
-//            .whereField("to", isEqualTo: currentUID)
-//
-//        query.getDocuments { snapshot, error in
-//            guard let docs = snapshot?.documents else { return }
-//            for doc in docs {
-//                doc.reference.delete()
-//            }
-//
-//            // ✅ Only update current user's document
-//            let currentUserRef = db.collection("users").document(currentUID)
-//
-//            currentUserRef.updateData([
-//                "friends": FieldValue.arrayUnion([fromUID])
-//            ]) { error in
-//                if let error = error {
-//                    print("Failed to update current user's friends list: \(error.localizedDescription)")
-//                } else {
-//                    print("Friend request accepted.")
-//                }
-//            }
-//        }
-//    }
     func acceptFriendRequest(fromUID: String) {
         guard let currentUID = user?.uid else { return }
 
@@ -267,6 +236,75 @@ class fireAuth: ObservableObject {
                         self.fetchFriendRequests()
                     }
                 }
+            }
+        }
+    }
+    func deleteGroup(name: String, completion: @escaping (Bool) -> Void) {
+        guard let currentUID = Auth.auth().currentUser?.uid else {
+            completion(false)
+            return
+        }
+
+        let db = Firestore.firestore()
+
+        db.collection("groups").whereField("name", isEqualTo: name).getDocuments { snapshot, error in
+            if let error = error {
+                print("Failed to find group: \(error.localizedDescription)")
+                completion(false)
+                return
+            }
+
+            guard let doc = snapshot?.documents.first else {
+                print("Group not found in Firestore.")
+                completion(false)
+                return
+            }
+
+            let groupID = doc.documentID
+
+            // Delete the group document
+            db.collection("groups").document(groupID).delete { deleteError in
+                if let deleteError = deleteError {
+                    print("Error deleting group: \(deleteError.localizedDescription)")
+                    completion(false)
+                    return
+                }
+
+                print("Deleted group \(name)")
+
+                // Remove group name from user's list
+                db.collection("users").document(currentUID).updateData([
+                    "groups": FieldValue.arrayRemove([name])
+                ]) { userUpdateError in
+                    if let userUpdateError = userUpdateError {
+                        print("Failed to update user's groups: \(userUpdateError.localizedDescription)")
+                        completion(false)
+                    } else {
+                        completion(true)
+                    }
+                }
+            }
+        }
+    }
+    func removeFriend(uid: String) {
+        guard let currentUID = Auth.auth().currentUser?.uid else { return }
+
+        let db = Firestore.firestore()
+        let currentUserRef = db.collection("users").document(currentUID)
+        let friendRef = db.collection("users").document(uid)
+
+        let batch = db.batch()
+        batch.updateData(["friends": FieldValue.arrayRemove([uid])], forDocument: currentUserRef)
+        batch.updateData(["friends": FieldValue.arrayRemove([currentUID])], forDocument: friendRef)
+
+        batch.commit { error in
+            if let error = error {
+                print("Failed to remove friend: \(error.localizedDescription)")
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.friends.removeAll { $0.id == uid }
             }
         }
     }
