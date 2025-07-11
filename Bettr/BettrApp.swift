@@ -13,11 +13,11 @@ import FirebaseFirestore
 
 class SearchBarFocusDelegate: NSObject, UISearchBarDelegate {
     var onFocus: () -> Void
-
+    
     init(onFocus: @escaping () -> Void) {
         self.onFocus = onFocus
     }
-
+    
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         onFocus()
     }
@@ -35,14 +35,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct BettrApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
     @StateObject var auth = fireAuth()
     @State private var startUp = false
     @State private var currentScreen: Screen = .splash
-
+    
     enum Screen {
         case splash, signUp, home, accountCreation, settings, screenTime, logIn
     }
-
+    
     var body: some Scene {
         WindowGroup {
             Group {
@@ -52,6 +53,9 @@ struct BettrApp: App {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 startUp = true
                                 if auth.user != nil {
+                                    let sharedDefaults = UserDefaults(suiteName: "group.com.finbar.Bettr")
+                                    let totalDuration = sharedDefaults?.double(forKey: "totalDuration") ?? 0
+                                    print("totalDuration in startup: \(totalDuration)")
                                     currentScreen = .home
                                 }else{
                                     currentScreen = .signUp

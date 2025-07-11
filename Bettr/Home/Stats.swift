@@ -15,16 +15,17 @@ extension DeviceActivityReport.Context{
 }
 struct statsView: View{
     @State private var context: DeviceActivityReport.Context = .totalActivity
+//    let time =  DeviceActivityReport(
+//        .totalActivity)
     private var filter : DeviceActivityFilter{
-        let start = Calendar.current.startOfDay(for: Date())
-        let now = Date()
-        return DeviceActivityFilter(
-            segment: .daily(during: DateInterval(start: start, end: now)),
-            users: .all,
-            devices: .init([.iPhone])
-        )
-    }
-    
+            let start = Calendar.current.startOfDay(for: Date())
+            let now = Date()
+            return DeviceActivityFilter(
+                segment: .daily(during: DateInterval(start: start, end: now)),
+                users: .all,
+                devices: .init([.iPhone])
+            )
+        }
     var body: some View{
         NavigationStack {
             VStack(spacing: 0) {
@@ -36,9 +37,9 @@ struct statsView: View{
                         .foregroundColor(.white)
                         .font(.system(size: 40))
                         .padding(.bottom, 400)
-                    DeviceActivityReport(
-                        .totalActivity)
-                }.cStyle1()
+                    
+                    DeviceActivityReport(.totalActivity)
+                }
             }.cStyle1()
             .toolbar {
                 ToolbarItem(placement: .principal) {

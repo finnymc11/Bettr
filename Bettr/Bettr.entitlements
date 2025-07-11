@@ -9,6 +9,10 @@
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.CY-9A6F8188-6C3A-11E9-8EB7-3AF9D32EA568.com.cydia.Extender</string>
+<<<<<<< Updated upstream
+=======
+		<string>group.com.data.bettr</string>
+>>>>>>> Stashed changes
 	</array>
 	<key>com.apple.security.files.user-selected.read-only</key>
 	<true/>
