@@ -11,9 +11,14 @@ import ManagedSettings
 import DeviceActivity
 
 
+
 extension DeviceActivityName{
     static let daily = Self("daily")
 }
+
+//extension DeviceActivityReport.Context {
+//    static let daily = Self("daily")
+//}
 
 class ScreenTimeModel: ObservableObject {
     static let shared = ScreenTimeModel()
@@ -47,6 +52,8 @@ class ScreenTimeModel: ObservableObject {
             saveSelection()
         }
     }
+    
+   
     
     func saveSelection(){
         do{
