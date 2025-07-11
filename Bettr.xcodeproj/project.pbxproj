@@ -21,6 +21,7 @@
 		FBE8C3CE2E21477A00E4B4F6 /* shieldUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FBE8C3C22E21477A00E4B4F6 /* shieldUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FBE8C3D82E21478900E4B4F6 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE8C3C32E21477A00E4B4F6 /* ManagedSettings.framework */; };
 		FBE8C3E02E21478900E4B4F6 /* shieldAction.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FBE8C3D72E21478900E4B4F6 /* shieldAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FBE8C3F52E21631900E4B4F6 /* activityReport.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = FBE8C3E92E21631900E4B4F6 /* activityReport.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,13 @@
 			remoteGlobalIDString = FBE8C3D62E21478900E4B4F6;
 			remoteInfo = shieldAction;
 		};
+		FBE8C3F32E21631900E4B4F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 928A70C32E0753E2005E93FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FBE8C3E82E21631900E4B4F6;
+			remoteInfo = activityReport;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -85,6 +93,17 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FBE8C3FA2E21631900E4B4F6 /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				FBE8C3F52E21631900E4B4F6 /* activityReport.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -97,6 +116,7 @@
 		FBE8C3C32E21477A00E4B4F6 /* ManagedSettings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettings.framework; path = System/Library/Frameworks/ManagedSettings.framework; sourceTree = SDKROOT; };
 		FBE8C3C52E21477A00E4B4F6 /* ManagedSettingsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettingsUI.framework; path = Library/Frameworks/ManagedSettingsUI.framework; sourceTree = DEVELOPER_DIR; };
 		FBE8C3D72E21478900E4B4F6 /* shieldAction.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shieldAction.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBE8C3E92E21631900E4B4F6 /* activityReport.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = activityReport.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -120,6 +140,13 @@
 				Info.plist,
 			);
 			target = FBE8C3D62E21478900E4B4F6 /* shieldAction */;
+		};
+		FBE8C3F62E21631900E4B4F6 /* Exceptions for "activityReport" folder in "activityReport" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = FBE8C3E82E21631900E4B4F6 /* activityReport */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -161,6 +188,14 @@
 				FBE8C3E12E21478900E4B4F6 /* Exceptions for "shieldAction" folder in "shieldAction" target */,
 			);
 			path = shieldAction;
+			sourceTree = "<group>";
+		};
+		FBE8C3EA2E21631900E4B4F6 /* activityReport */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FBE8C3F62E21631900E4B4F6 /* Exceptions for "activityReport" folder in "activityReport" target */,
+			);
+			path = activityReport;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -219,6 +254,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FBE8C3E62E21631900E4B4F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -231,6 +273,7 @@
 				FBE8C3AD2E2146BE00E4B4F6 /* activityMonitor */,
 				FBE8C3C72E21477A00E4B4F6 /* shieldUI */,
 				FBE8C3D92E21478900E4B4F6 /* shieldAction */,
+				FBE8C3EA2E21631900E4B4F6 /* activityReport */,
 				92E737B52E0DC33900640663 /* Frameworks */,
 				928A70CC2E0753E2005E93FE /* Products */,
 			);
@@ -245,6 +288,7 @@
 				FBE8C3AA2E2146BE00E4B4F6 /* activityMonitor.appex */,
 				FBE8C3C22E21477A00E4B4F6 /* shieldUI.appex */,
 				FBE8C3D72E21478900E4B4F6 /* shieldAction.appex */,
+				FBE8C3E92E21631900E4B4F6 /* activityReport.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -271,6 +315,7 @@
 				928A70C92E0753E2005E93FE /* Resources */,
 				92BC891A2E1C3FC7006017DF /* Embed Frameworks */,
 				FBE8C3B52E2146BE00E4B4F6 /* Embed Foundation Extensions */,
+				FBE8C3FA2E21631900E4B4F6 /* Embed ExtensionKit Extensions */,
 			);
 			buildRules = (
 			);
@@ -278,6 +323,7 @@
 				FBE8C3B32E2146BE00E4B4F6 /* PBXTargetDependency */,
 				FBE8C3CD2E21477A00E4B4F6 /* PBXTargetDependency */,
 				FBE8C3DF2E21478900E4B4F6 /* PBXTargetDependency */,
+				FBE8C3F42E21631900E4B4F6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				928A70CD2E0753E2005E93FE /* Bettr */,
@@ -408,6 +454,28 @@
 			productReference = FBE8C3D72E21478900E4B4F6 /* shieldAction.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		FBE8C3E82E21631900E4B4F6 /* activityReport */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FBE8C3F72E21631900E4B4F6 /* Build configuration list for PBXNativeTarget "activityReport" */;
+			buildPhases = (
+				FBE8C3E52E21631900E4B4F6 /* Sources */,
+				FBE8C3E62E21631900E4B4F6 /* Frameworks */,
+				FBE8C3E72E21631900E4B4F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				FBE8C3EA2E21631900E4B4F6 /* activityReport */,
+			);
+			name = activityReport;
+			packageProductDependencies = (
+			);
+			productName = activityReport;
+			productReference = FBE8C3E92E21631900E4B4F6 /* activityReport.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -438,6 +506,9 @@
 					FBE8C3D62E21478900E4B4F6 = {
 						CreatedOnToolsVersion = 16.4;
 					};
+					FBE8C3E82E21631900E4B4F6 = {
+						CreatedOnToolsVersion = 16.4;
+					};
 				};
 			};
 			buildConfigurationList = 928A70C62E0753E2005E93FE /* Build configuration list for PBXProject "Bettr" */;
@@ -463,6 +534,7 @@
 				FBE8C3A92E2146BE00E4B4F6 /* activityMonitor */,
 				FBE8C3C12E21477A00E4B4F6 /* shieldUI */,
 				FBE8C3D62E21478900E4B4F6 /* shieldAction */,
+				FBE8C3E82E21631900E4B4F6 /* activityReport */,
 			);
 		};
 /* End PBXProject section */
@@ -504,6 +576,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		FBE8C3D52E21478900E4B4F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FBE8C3E72E21631900E4B4F6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -555,6 +634,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FBE8C3E52E21631900E4B4F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -582,6 +668,11 @@
 			isa = PBXTargetDependency;
 			target = FBE8C3D62E21478900E4B4F6 /* shieldAction */;
 			targetProxy = FBE8C3DE2E21478900E4B4F6 /* PBXContainerItemProxy */;
+		};
+		FBE8C3F42E21631900E4B4F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FBE8C3E82E21631900E4B4F6 /* activityReport */;
+			targetProxy = FBE8C3F32E21631900E4B4F6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1045,6 +1136,63 @@
 			};
 			name = Release;
 		};
+		FBE8C3F82E21631900E4B4F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = activityReport/activityReport.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EN94KFC4U5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = activityReport/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = activityReport;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = bettr.Bettr.activityReport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FBE8C3F92E21631900E4B4F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = activityReport/activityReport.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EN94KFC4U5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = activityReport/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = activityReport;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = bettr.Bettr.activityReport;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1107,6 +1255,15 @@
 			buildConfigurations = (
 				FBE8C3E32E21478900E4B4F6 /* Debug */,
 				FBE8C3E42E21478900E4B4F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FBE8C3F72E21631900E4B4F6 /* Build configuration list for PBXNativeTarget "activityReport" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FBE8C3F82E21631900E4B4F6 /* Debug */,
+				FBE8C3F92E21631900E4B4F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
