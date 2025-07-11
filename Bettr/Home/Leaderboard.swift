@@ -419,8 +419,6 @@ struct leaderView: View {
                     }
                 }
                 .listStyle(.plain)
-                .navigationTitle("Search Results")
-                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button("Close") {
