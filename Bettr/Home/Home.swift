@@ -105,12 +105,17 @@ struct homeView: View {
     private func setupNavigationAppearance() {
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = .black
+        appearance.shadowColor = .clear // Hides the bottom line
+
         appearance.titleTextAttributes = [
             .foregroundColor: UIColor.white,
             .font: UIFont.systemFont(ofSize: 40, weight: .heavy)
         ]
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        appearance.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 10) 
+
+        
     }
 }
 

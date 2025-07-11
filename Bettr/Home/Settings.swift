@@ -9,8 +9,10 @@ import SwiftUI
 
 struct SettingsView: View {
     @Binding var currentScreen: BettrApp.Screen
+    @StateObject var model = ScreenTimeModel.shared
     @EnvironmentObject var auth: fireAuth
     @State private var showTab = false
+    @State private var showPicker = false
     var body: some View {
         NavigationStack{
             VStack{
@@ -23,10 +25,18 @@ struct SettingsView: View {
                         Button("Log Out"){
                             auth.signOut()
                             print("Current Screen: \(currentScreen)")
-                        }.foregroundStyle(Color.white).frame(maxWidth: .infinity).padding(10)
-                            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.gray, lineWidth: 1)).frame(maxWidth: .infinity)
+                        }.settingsButtStyle()
+                        
+                        Button("Block Apps"){
+                            print("block apps")
+                            showPicker.toggle()
+                        }.familyActivityPicker(isPresented: $showPicker, selection: $model.appSelection)
+                            .settingsButtStyle()
+
+
                            
-                    }.listRowBackground(Color.black)/*.toolbar(.hidden, for:.tabBar)*/
+                    }.listRowBackground(Color.black).listRowSeparator(.hidden)
+
                 }.listStyle(.plain)
                     .cStyle1()
             }
