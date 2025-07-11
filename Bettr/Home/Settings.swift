@@ -13,8 +13,11 @@ struct SettingsView: View {
     @State private var showTab = false
     var body: some View {
         NavigationStack{
-            
             VStack{
+                if let username = auth.user?.displayName {
+                    Text(username)
+                        .foregroundColor(.gray)
+                }
                 List{
                     Section(header: Text("Account")){
                         Button("Log Out"){
