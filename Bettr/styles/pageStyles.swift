@@ -13,8 +13,8 @@ import SwiftUI
 struct cStyle1: ViewModifier{
     func body(content: Content) -> some View{
         content
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.black)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.black)
     }
 }
 
@@ -22,12 +22,12 @@ struct cStyle1: ViewModifier{
 struct buttonStyle: ViewModifier{
     func body(content: Content) -> some View{
         content
-//            .frame(maxWidth: .infinity)
+        //            .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-//            .padding(.horizontal)
-                       .background(Color.white)
-                       .foregroundColor(.black)
-                       .clipShape(Capsule())
+        //            .padding(.horizontal)
+            .background(Color.white)
+            .foregroundColor(.black)
+            .clipShape(Capsule())
         
     }
 }
@@ -39,7 +39,7 @@ struct textStyle: ViewModifier{
             .foregroundColor(.white)
             .font(.system(size: 60,weight: .heavy,design: .default))
             .tracking(2.5)
-           
+        
     }
     
 }
@@ -50,7 +50,7 @@ struct textStyleRegular: ViewModifier{
             .foregroundColor(.white)
             .font(.system(size: 40,weight: .thin, design: .default))
             .tracking(2.5)
-           
+        
     }
 }
 struct borderedTextField: ViewModifier {
@@ -92,7 +92,20 @@ func hideText(_ binding: Binding<Bool>, delay: TimeInterval = 0.0, effectDuratio
     
 }
 
+struct settingsButt: ViewModifier{
+    func body(content: Content) -> some View {
+        content.foregroundStyle(Color.white)
+            .frame(maxWidth: .infinity).padding(10)
+            .overlay(RoundedRectangle(cornerRadius: 5)
+            .stroke(Color.gray, lineWidth: 1))
+            .frame(maxWidth: .infinity)
+    }
+}
+
 extension View{
+    func settingsButtStyle() -> some View{
+        self.modifier(settingsButt())
+    }
     func cStyle1() -> some View{
         self.modifier(Bettr.cStyle1())
     }
