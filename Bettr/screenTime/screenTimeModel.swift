@@ -25,6 +25,7 @@ class ScreenTimeModel: ObservableObject {
     private let store = ManagedSettingsStore()
     private let center = DeviceActivityCenter()
     private let selectionKey = "appSelectionKey"
+    private let appGroupDefaults =  UserDefaults(suiteName: "group.com.data.Bettr")
     
     private init(){
         loadSelection()
@@ -58,14 +59,16 @@ class ScreenTimeModel: ObservableObject {
     func saveSelection(){
         do{
             let data = try JSONEncoder().encode(appSelection)
-            UserDefaults.standard.set(data, forKey: selectionKey)
+//            UserDefaults.standard.set(data, forKey: selectionKey)
+            appGroupDefaults?.set(data, forKey: selectionKey)
         }catch{
             print("Error saving selection: \(error.localizedDescription)")
         }
     }
     
     func loadSelection(){
-        guard let data = UserDefaults.standard.data(forKey: selectionKey) else {return}
+//        guard let data = UserDefaults.standard.data(forKey: selectionKey) else {return}
+        guard let data = appGroupDefaults?.data(forKey: selectionKey) else {return}
         do{
             let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
             DispatchQueue.main.async {
