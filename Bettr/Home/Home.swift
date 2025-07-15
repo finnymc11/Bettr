@@ -6,22 +6,39 @@
 //
 
 import SwiftUI
+import DeviceActivity
+
 
 struct Home: View {
+    @State private var context: DeviceActivityReport.Context = .totalActivity
+    private var filter : DeviceActivityFilter{
+        let start = Calendar.current.startOfDay(for: Date())
+        let now = Date()
+        return DeviceActivityFilter(
+            segment: .daily(during: DateInterval(start: start, end: now)),
+            users: .all,
+            devices: .init([.iPhone])
+        )
+    }
     @State private var selection: Int = 1
     
     var body: some View {
         TabView(selection: $selection) {
-            LazyView(statsView())
+            statsView()
                 .tabItem {
                     Label("Stats", systemImage: "hourglass")
                 }.tag(0)
             
-            LazyView(homeView())
+            homeView()
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }.tag(1)
-            LazyView(friendView())
+
+            friendView()
+
+            
+            
+
                 .tabItem {
                     Label("Friends", systemImage: "person.3.fill")
                 }.tag(2)
@@ -31,15 +48,14 @@ struct Home: View {
 }
 
 struct homeView: View {
-    @ObservedObject var screenTime = ScreenTimeModel.shared
     @State private var totalUsage: TimeInterval = 0
-//    Task{
-////        totalUsage = await screenTime.get
-//        todo()
-//    }
     
-    @State private var screenTimeMinutes = 40
-    private let dailyGoalMinutes = 120
+    @State private var currentTime: TimeInterval = 0
+    
+    private var screenTimeMinutes : Int {
+        Int(totalUsage/60)
+    }
+    private let dailyGoalMinutes = 360
     @State private var currentScreen: BettrApp.Screen = .home
     
     private var screenTimeProgress: Double {
@@ -61,7 +77,7 @@ struct homeView: View {
     private var currentTimeString: String {
         minutesToString(screenTimeMinutes)
     }
-    
+//    
     private var goalTimeString: String {
         minutesToString(dailyGoalMinutes)
     }
@@ -78,6 +94,8 @@ struct homeView: View {
             VStack {
                 Spacer()
                 VStack(spacing: 12) {
+                    
+                    
                     Text("Screen time today")
                         .foregroundColor(.white)
                         .font(.title2)
@@ -87,7 +105,9 @@ struct homeView: View {
                                 currentTime: currentTimeString,
                                 goalTime: goalTimeString,
                                 exceededGoal: exceededGoal,
-                                progressColor: progressColor)
+                                progressColor: progressColor
+                    
+                    )
                     .frame(height: 40)
                     .padding(.horizontal, 40)
                 }
@@ -103,9 +123,28 @@ struct homeView: View {
                     }
                 }
             }
+            DeviceActivityReport(.totalActivity)
+                .frame(width: 0, height: 0)
+                .hidden()
         }
         .preferredColorScheme(.dark)
-        .onAppear(perform: setupNavigationAppearance)
+        .onAppear{
+            setupNavigationAppearance()
+        }
+        .task{
+            print("homeview skibidi")
+            let duration = await getScreenTime()
+            print("homeview duration \(duration)")
+         
+            
+        }
+        
+    }
+    
+    private func getScreenTime() async -> Double {
+        let sharedDefaults = UserDefaults(suiteName: "group.com.data.bettr")
+        let totalDuration = sharedDefaults?.double(forKey: "totalDuration") ?? 0
+        return totalDuration
     }
     
     private func setupNavigationAppearance() {
@@ -131,28 +170,38 @@ struct ProgressBar: View {
     let goalTime: String
     let exceededGoal: Bool
     let progressColor: Color
-    
+//    @State  var screenTime: Double
     var body: some View {
-        GeometryReader { geo in
-            ProgressView(value: progress)
-                .progressViewStyle(.linear)
-                .tint(progressColor)
-                .frame(maxWidth: .infinity)
-                .overlay(alignment: .leading) {
-                    if !exceededGoal {
-                        Text(currentTime)
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
-                            .offset(x: labelOffset(for: geo.size.width), y: 18)
+        ZStack{
+            GeometryReader { geo in
+                ProgressView(value: progress)
+                    .progressViewStyle(.linear)
+                    .tint(progressColor)
+                    .frame(maxWidth: .infinity)
+                    .overlay(alignment: .leading) {
+                        if !exceededGoal {
+                            Text(currentTime)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.white)
+                                .offset(x: labelOffset(for: geo.size.width), y: 18)
+                        }
                     }
-                }
-                .overlay(alignment: .trailing) {
-                    Text(exceededGoal ? currentTime : goalTime)
-                        .font(.system(size: 20))
-                        .foregroundColor(.white)
-                        .offset(y: 18)
-                }
+                    .overlay(alignment: .trailing) {
+                        Text(exceededGoal ? currentTime : goalTime)
+                            .font(.system(size: 20))
+                            .foregroundColor(.white)
+                            .offset(y: 18)
+                    }
+            }
+        }.task{
+            print("homeview skibidi")
+            let sharedDefaults = UserDefaults(suiteName: "group.com.data.bettr")
+            let totalDuration = sharedDefaults?.double(forKey: "totalDuration") ?? 0
+            print("totalDuration in home: \(totalDuration)")
+//            self.screenTime = totalDuration
+
         }
+      
     }
     
     private func labelOffset(for width: CGFloat) -> CGFloat {
@@ -162,18 +211,18 @@ struct ProgressBar: View {
     }
 }
 
-struct LazyView<Content: View>: View {
-    let build: () -> Content
-    init(_ build: @autoclosure @escaping () -> Content) {
-        self.build = build
-    }
-    var body: Content { build() }
-}
-
+//struct LazyView<Content: View>: View {
+//    let build: () -> Content
+//    init(_ build: @autoclosure @escaping () -> Content) {
+//        self.build = build
+//    }
+//    var body: Content { build() }
+//}
+//
 
 
 
 #Preview {
-    Home()
+    homeView()
 }
 

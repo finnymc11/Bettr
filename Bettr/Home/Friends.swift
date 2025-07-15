@@ -103,11 +103,65 @@ class GroupViewModel: ObservableObject {
     }
 }
 
+extension GroupViewModel {
+    func joinGroup(groupID: String, groupName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let currentUID = Auth.auth().currentUser?.uid else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No current user"])))
+            return
+        }
+        
+        let groupRef = db.collection("groups").document(groupID)
+        let userRef = db.collection("users").document(currentUID)
+        
+        groupRef.updateData([
+            "members": FieldValue.arrayUnion([currentUID])
+        ]) { error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            userRef.updateData([
+                "groups": FieldValue.arrayUnion([groupName])
+            ]) { userError in
+                if let userError = userError {
+                    completion(.failure(userError))
+                } else {
+                    self.fetchUserGroups()
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+}
+
 class SearchViewModel: ObservableObject {
     @Published var results: [SearchResultItem] = []
+    @Published var sentRequests: Set<String> = []
+    @Published var friends: Set<String> = []
+
     private let db = Firestore.firestore()
 
     var currentUserID: String? = Auth.auth().currentUser?.uid
+    
+    func loadSentRequests() {
+        guard let currentUserID = currentUserID else { return }
+
+        db.collection("friendRequests")
+            .whereField("from", isEqualTo: currentUserID)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Failed to load sent friend requests: \(error.localizedDescription)")
+                    return
+                }
+
+                let sentToIDs = snapshot?.documents.compactMap { $0.data()["to"] as? String } ?? []
+                DispatchQueue.main.async {
+                    self.sentRequests = Set(sentToIDs)
+                    print("Sent friend requests: \(self.sentRequests)")
+                }
+            }
+    }
 
     func search(for text: String, excludingGroups: [String]) {
         guard !text.isEmpty else {
@@ -163,6 +217,9 @@ class SearchViewModel: ObservableObject {
 
 struct SearchResultRow: View {
     let item: SearchResultItem
+    let onAddFriend: () -> Void
+    let requestSent: Bool
+    let isAlreadyFriend: Bool
 
     var body: some View {
         HStack {
@@ -183,19 +240,114 @@ struct SearchResultRow: View {
 
             Spacer()
 
-            Image(systemName: "plus.circle.fill")
-                .foregroundColor(.green)
-                .font(.title3)
+            if isAlreadyFriend {
+                EmptyView()
+            } else if requestSent {
+                Text("Request Sent")
+                    .foregroundColor(.gray)
+                    .font(.subheadline)
+            } else {
+                Button(action: onAddFriend) {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundColor(.green)
+                        .font(.title3)
+                }
+            }
         }
         .padding(.vertical, 4)
+    }
+}
+
+struct DetailedSearchRow: View {
+    let item: SearchResultItem
+    @ObservedObject var auth: fireAuth
+    @ObservedObject var searchVM: SearchViewModel
+    @ObservedObject var groupVM: GroupViewModel
+    let onDismiss: () -> Void
+
+    var body: some View {
+        switch item.type {
+        case .user:
+            Button {
+                sendFriendRequest()
+            } label: {
+                SearchResultRow(
+                    item: item,
+                    onAddFriend: {
+                        sendFriendRequest()
+                    },
+                    requestSent: searchVM.sentRequests.contains(item.id),
+                    isAlreadyFriend: auth.friends.contains(where: { $0.id == item.id })
+                )
+            }
+
+        case .group:
+            groupRow
+        }
+    }
+
+    private var groupRow: some View {
+        let alreadyJoined = groupVM.userGroups.contains(item.title)
+
+        return HStack {
+            Label {
+                Text(item.title)
+            } icon: {
+                Image(systemName: "person.3.fill")
+                    .foregroundColor(.purple)
+            }
+
+            Spacer()
+
+            if alreadyJoined {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.gray)
+                    .font(.title3)
+            } else {
+                Button {
+                    joinGroup()
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundColor(.green)
+                        .font(.title3)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func sendFriendRequest() {
+        auth.addFriend(friendUID: item.id) { error in
+            if let error = error {
+                print("Friend request failed: \(error.localizedDescription)")
+            } else {
+                print("Friend request sent to \(item.title)")
+                DispatchQueue.main.async {
+                    searchVM.sentRequests.insert(item.id)
+                }
+            }
+        }
+    }
+    
+    private func joinGroup() {
+        groupVM.joinGroup(groupID: item.id, groupName: item.title) { result in
+            switch result {
+            case .success:
+                DispatchQueue.main.async {
+                    if !groupVM.userGroups.contains(item.title) {
+                        groupVM.userGroups.append(item.title)
+                    }
+                }
+            case .failure(let error):
+                print("Failed to join group: \(error.localizedDescription)")
+            }
+        }
     }
 }
 
 struct friendView: View {
     @State private var searchText = ""
     @State private var showingCreateGroup = false
-    @State private var isEditing = false
-
     @State private var path = NavigationPath()
     @State private var selectedGroup: String? = nil
     @State private var acceptedRequests: Set<String> = []
@@ -212,14 +364,24 @@ struct friendView: View {
         NavigationStack(path: $path) {
             List {
                 if searchText.isEmpty {
-                    myGroupsSection
-                    friendRequestsSection
+                    MyGroupsSection(myGroups: myGroups, path: $path)
+                    FriendRequestsSection(selectedFriend: $selectedFriend)
+                        .environmentObject(auth)
                 }
 
-                searchResultsSection
+                SearchResultsSection(searchText: searchText)
+                    .environmentObject(auth)
+                    .environmentObject(groupVM)
+                    .environmentObject(searchVM)
             }
             .navigationDestination(for: String.self) { groupName in
-                GroupDetail(groupName: groupName)
+                GroupDetail(
+                    groupName: groupName,
+                    onLeaveGroup: {
+                        path = NavigationPath()
+                    }
+                )
+                .environmentObject(auth)
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Friends")
@@ -235,14 +397,6 @@ struct friendView: View {
                 showingDetailedSearch = true
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(isEditing ? "Done" : "Edit") {
-                        isEditing.toggle()
-                    }
-                    .disabled(myGroups.isEmpty)
-                    .foregroundColor(myGroups.isEmpty ? .gray : .blue)
-                }
-
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showingCreateGroup = true
@@ -251,7 +405,6 @@ struct friendView: View {
                     }
                 }
             }
-            .environment(\.editMode, .constant(isEditing ? EditMode.active : EditMode.inactive))
             .sheet(isPresented: $showingCreateGroup) {
                 CreateGroup(viewModel: groupVM) { newGroup in
                     selectedGroup = newGroup
@@ -267,124 +420,114 @@ struct friendView: View {
                     query: searchText,
                     excludingGroups: myGroups,
                     dismiss: { showingDetailedSearch = false },
-                    auth: auth
+                    auth: auth,
+                    searchVM: searchVM,
+                    groupVM: groupVM
                 )
-            }
-            .onChange(of: myGroups) { _, newGroups in
-                if newGroups.isEmpty {
-                    isEditing = false
-                }
             }
             .onAppear {
                 searchVM.currentUserID = auth.user?.uid ?? Auth.auth().currentUser?.uid
+                searchVM.loadSentRequests()
             }
         }
     }
-    
-    struct DetailedSearch: View {
-        let query: String
-        let excludingGroups: [String]
-        let dismiss: () -> Void
-        @ObservedObject var auth: fireAuth
+}
 
-        @State private var selectedTab = "Accounts"
-        @StateObject private var searchVM = SearchViewModel()
+struct DetailedSearch: View {
+    let query: String
+    let excludingGroups: [String]
+    let dismiss: () -> Void
+    @ObservedObject var auth: fireAuth
+    @ObservedObject var searchVM: SearchViewModel
+    @State private var selectedTab = "Accounts"
+    @State private var searchText: String = ""
+    @ObservedObject var groupVM: GroupViewModel
 
-        // 👇 New
-        @State private var searchText: String = ""
-
-        var body: some View {
-            NavigationStack {
-                List {
-                    Picker("Search Type", selection: $selectedTab) {
-                        Text("Accounts").tag("Accounts")
-                        Text("Groups").tag("Groups")
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.vertical)
-                    .listRowSeparator(.hidden)
-
-                    ForEach(filteredResults) { item in
-                        Button {
-                            handleItemSelection(item)
-                        } label: {
-                            SearchResultRow(item: item)
-                        }
-                    }
-
-                    if filteredResults.isEmpty {
-                        Text("No results found.")
-                            .foregroundColor(.gray)
-                            .padding()
-                            .listRowSeparator(.hidden)
-                    }
+    var body: some View {
+        NavigationStack {
+            List {
+                Picker("Search Type", selection: $selectedTab) {
+                    Text("Accounts").tag("Accounts")
+                    Text("Groups").tag("Groups")
                 }
-                .listStyle(.plain)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Close") {
-                            dismiss()
-                        }
-                    }
+                .pickerStyle(.segmented)
+                .padding(.vertical)
+                .listRowSeparator(.hidden)
+
+                ForEach(filteredResults) { item in
+                    DetailedSearchRow(
+                        item: item,
+                        auth: auth,
+                        searchVM: searchVM,
+                        groupVM: groupVM,
+                        onDismiss: dismiss
+                    )
                 }
-                .searchable(
-                    text: $searchText,
-                    placement: .navigationBarDrawer(displayMode: .automatic),
-                    prompt: "Search friends & groups"
-                )
-                .onChange(of: searchText) { _, newValue in
-                    searchVM.search(for: newValue, excludingGroups: excludingGroups)
-                }
-                .onAppear {
-                    searchVM.currentUserID = auth.user?.uid
-                    searchText = query
-                    searchVM.search(for: query, excludingGroups: excludingGroups)
+
+                if filteredResults.isEmpty {
+                    Text("No results found.")
+                        .foregroundColor(.gray)
+                        .padding()
+                        .listRowSeparator(.hidden)
                 }
             }
-        }
-
-        private var filteredResults: [SearchResultItem] {
-            searchVM.results.filter { selectedTab == "Accounts" ? $0.type == .user : $0.type == .group }
-        }
-
-        private func handleItemSelection(_ item: SearchResultItem) {
-            if item.type == .user {
-                auth.addFriend(friendUID: item.id) { error in
-                    if let error = error {
-                        print("Friend request failed: \(error.localizedDescription)")
-                    } else {
-                        print("Friend request sent to \(item.title)")
-                        searchVM.results.removeAll { $0.id == item.id }
+            .listStyle(.plain)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Close") {
+                        dismiss()
                     }
                 }
-            } else {
-                print("Selected group: \(item.title)")
+            }
+            .searchable(
+                text: $searchText,
+                placement: .navigationBarDrawer(displayMode: .automatic),
+                prompt: "Search friends & groups"
+            )
+            .onChange(of: searchText) { _, newValue in
+                searchVM.search(for: newValue, excludingGroups: excludingGroups)
+            }
+            .onAppear {
+                searchVM.currentUserID = auth.user?.uid
+                searchText = query
+                searchVM.search(for: query, excludingGroups: excludingGroups)
             }
         }
     }
-    
-    private var myGroupsSection: some View {
+
+    private var filteredResults: [SearchResultItem] {
+        searchVM.results.filter { selectedTab == "Accounts" ? $0.type == .user : $0.type == .group }
+    }
+}
+
+
+struct MyGroupsSection: View {
+    var myGroups: [String]
+    @Binding var path: NavigationPath
+
+    var body: some View {
         Section(header: Text("My Groups")) {
             if myGroups.isEmpty {
                 Text("You haven't joined any groups yet")
                     .foregroundColor(.gray)
             } else {
                 ForEach(myGroups, id: \.self) { group in
-                    NavigationLink(destination: GroupDetail(groupName: group)) {
+                    Button {
+                        path.append(group)
+                    } label: {
                         Text(group)
-                    }
-                }
-                .onDelete { indexSet in
-                    for index in indexSet {
-                        let groupToDelete = myGroups[index]
-                        groupVM.deleteGroup(name: groupToDelete, auth: auth)
                     }
                 }
             }
         }
     }
+}
 
-    private var friendRequestsSection: some View {
+struct FriendRequestsSection: View {
+    @EnvironmentObject var auth: fireAuth
+    @Binding var selectedFriend: SearchResultItem?
+
+    var body: some View {
         Section(header: Text("Friends")) {
             if auth.friends.isEmpty && auth.friendRequests.isEmpty {
                 Text("No friends yet")
@@ -407,45 +550,58 @@ struct friendView: View {
                         VStack(alignment: .leading) {
                             Text(request.title)
                                 .bold()
-                                .foregroundColor(.blue) // Make request name blue
+                                .foregroundColor(.blue)
                             if let email = request.subtitle {
                                 Text(email)
                                     .font(.subheadline)
-                                    .foregroundColor(.blue.opacity(0.7)) // Lighter blue for email
+                                    .foregroundColor(.blue.opacity(0.7))
                             }
                         }
+                        .contentShape(Rectangle())
+
                         Spacer()
-                        if acceptedRequests.contains(request.id) {
-                            Text("Accepted")
-                                .foregroundColor(.green)
-                                .font(.subheadline)
-                        } else {
+
+                        HStack(spacing: 12) {
                             Button {
                                 auth.acceptFriendRequest(fromUID: request.id)
-                                acceptedRequests.insert(request.id)
-
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                    if let index = auth.friendRequests.firstIndex(where: { $0.id == request.id }) {
-                                        let accepted = auth.friendRequests.remove(at: index)
-                                        if !auth.friends.contains(where: { $0.id == accepted.id }) {
-                                            auth.friends.append(accepted)
-                                        }
-                                        acceptedRequests.remove(request.id)
+                                if let index = auth.friendRequests.firstIndex(where: { $0.id == request.id }) {
+                                    let accepted = auth.friendRequests.remove(at: index)
+                                    if !auth.friends.contains(where: { $0.id == accepted.id }) {
+                                        auth.friends.append(accepted)
                                     }
                                 }
                             } label: {
                                 Text("Accept")
                                     .foregroundColor(.blue)
                             }
+                            .buttonStyle(.plain)
+
+                            Button {
+                                auth.declineFriendRequest(fromUID: request.id)
+                                if let index = auth.friendRequests.firstIndex(where: { $0.id == request.id }) {
+                                    auth.friendRequests.remove(at: index)
+                                }
+                            } label: {
+                                Text("Decline")
+                                    .foregroundColor(.red)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
+                    .padding(.vertical, 6)
                 }
             }
         }
     }
-    
-    @ViewBuilder
-    private var searchResultsSection: some View {
+}
+
+struct SearchResultsSection: View {
+    @EnvironmentObject var auth: fireAuth
+    @EnvironmentObject var groupVM: GroupViewModel
+    @EnvironmentObject var searchVM: SearchViewModel
+    var searchText: String
+
+    var body: some View {
         if !searchText.isEmpty {
             Section(header: Text("Results")) {
                 if searchVM.results.isEmpty {
@@ -453,31 +609,69 @@ struct friendView: View {
                         .foregroundColor(.gray)
                 } else {
                     ForEach(searchVM.results) { item in
-                        Button {
-                            handleItemSelection(item)
-                        } label: {
-                            SearchResultRow(item: item)
+                        switch item.type {
+                        case .user:
+                            SearchResultRow(
+                                item: item,
+                                onAddFriend: {
+                                    auth.addFriend(friendUID: item.id) { error in
+                                        if let error = error {
+                                            print("Friend request failed: \(error.localizedDescription)")
+                                        } else {
+                                            print("Friend request sent to \(item.title)")
+                                            DispatchQueue.main.async {
+                                                searchVM.sentRequests.insert(item.id)
+                                            }
+                                        }
+                                    }
+                                },
+                                requestSent: searchVM.sentRequests.contains(item.id),
+                                isAlreadyFriend: auth.friends.contains(where: { $0.id == item.id })
+                            )
+
+                        case .group:
+                            let alreadyJoined = groupVM.userGroups.contains(item.title)
+                            HStack {
+                                Label {
+                                    Text(item.title)
+                                } icon: {
+                                    Image(systemName: "person.3.fill")
+                                        .foregroundColor(.purple)
+                                }
+
+                                Spacer()
+
+                                if alreadyJoined {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.gray)
+                                        .font(.title3)
+                                } else {
+                                    Button {
+                                        groupVM.joinGroup(groupID: item.id, groupName: item.title) { result in
+                                            switch result {
+                                            case .success:
+                                                DispatchQueue.main.async {
+                                                    withAnimation {
+                                                        if !groupVM.userGroups.contains(item.title) {
+                                                            groupVM.userGroups.append(item.title)
+                                                        }
+                                                    }
+                                                }
+                                            case .failure(let error):
+                                                print("Failed to join group: \(error.localizedDescription)")
+                                            }
+                                        }
+                                    } label: {
+                                        Image(systemName: "plus.circle.fill")
+                                            .foregroundColor(.green)
+                                            .font(.title3)
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 4)
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private func handleItemSelection(_ item: SearchResultItem) {
-        if item.type == .user {
-            auth.addFriend(friendUID: item.id) { error in
-                if let error = error {
-                    print("Friend request failed: \(error.localizedDescription)")
-                } else {
-                    print("Friend request sent to \(item.title)")
-                    searchVM.results.removeAll { $0.id == item.id }
-                }
-            }
-        } else {
-            withAnimation {
-                groupVM.userGroups.append(item.title)
-                searchText = ""
             }
         }
     }
@@ -518,16 +712,25 @@ struct CreateGroup: View {
 
 struct GroupDetail: View {
     var groupName: String
+    var onLeaveGroup: (() -> Void)? = nil
     @State private var showingSettings = false
     @State private var showingAddMembers = false
     @EnvironmentObject var auth: fireAuth
     @State private var members: [SearchResultItem] = []
+    @State private var creatorID: String?
+    @State private var groupDocID: String?
 
     var body: some View {
         List {
             Section(header: Text("Members")) {
-                ForEach(members, id: \ .id) { member in
+                ForEach(members.filter { $0.id != auth.user?.uid }, id: \.id) { member in
                     Label(member.title, systemImage: "person.fill")
+                }
+                .onDelete(perform: canCurrentUserRemoveMembers ? removeMembers : nil)
+
+                if let currentUser = members.first(where: { $0.id == auth.user?.uid }) {
+                    Label(currentUser.title, systemImage: "person.fill")
+                        .foregroundColor(.gray)
                 }
             }
 
@@ -556,7 +759,14 @@ struct GroupDetail: View {
             }
         }
         .sheet(isPresented: $showingSettings) {
-            GroupSettings(groupName: groupName)
+            GroupSettings(
+                groupName: groupName,
+                onLeaveGroup: {
+                    showingSettings = false
+                    onLeaveGroup?()
+                }
+            )
+            .environmentObject(auth)
         }
         .sheet(isPresented: $showingAddMembers) {
             AddMembersView(groupName: groupName) {
@@ -565,7 +775,22 @@ struct GroupDetail: View {
             .environmentObject(auth)
         }
         .onAppear {
+            fetchGroupData()
             fetchMembers()
+        }
+    }
+
+    private var canCurrentUserRemoveMembers: Bool {
+        auth.user?.uid == creatorID
+    }
+
+    private func fetchGroupData() {
+        let db = Firestore.firestore()
+        db.collection("groups").whereField("name", isEqualTo: groupName).getDocuments { snapshot, error in
+            guard let doc = snapshot?.documents.first else { return }
+            groupDocID = doc.documentID
+            let data = doc.data()
+            creatorID = data["creator"] as? String
         }
     }
 
@@ -575,7 +800,7 @@ struct GroupDetail: View {
             guard let doc = snapshot?.documents.first else { return }
             let data = doc.data()
             let memberIDs = data["members"] as? [String] ?? []
-            let creatorID = data["creator"] as? String
+            creatorID = data["creator"] as? String
 
             let userRef = db.collection("users")
             userRef.whereField(FieldPath.documentID(), in: memberIDs).getDocuments { userSnapshot, error in
@@ -593,7 +818,6 @@ struct GroupDetail: View {
                     )
                 }
 
-                // Preserve creator at the top if sorting is changed in the future
                 fetchedMembers.sort {
                     $0.title.contains("(creator)") && !$1.title.contains("(creator)")
                 }
@@ -601,6 +825,35 @@ struct GroupDetail: View {
                 self.members = fetchedMembers
             }
         }
+    }
+
+    private func removeMembers(at offsets: IndexSet) {
+        guard let groupDocID = groupDocID else { return }
+        let db = Firestore.firestore()
+
+        let membersToRemove = offsets.map { members[$0] }
+
+        for member in membersToRemove {
+            if member.id == creatorID { continue }
+
+            db.collection("groups").document(groupDocID).updateData([
+                "members": FieldValue.arrayRemove([member.id])
+            ]) { error in
+                if let error = error {
+                    print("Failed to remove member \(member.title): \(error.localizedDescription)")
+                } else {
+                    db.collection("users").document(member.id).updateData([
+                        "groups": FieldValue.arrayRemove([groupName])
+                    ]) { userError in
+                        if let userError = userError {
+                            print("Failed to update user \(member.title): \(userError.localizedDescription)")
+                        }
+                    }
+                }
+            }
+        }
+
+        members.remove(atOffsets: offsets)
     }
 }
 
@@ -668,7 +921,6 @@ struct AddMembersView: View {
 
             let groupID = doc.documentID
 
-            // Step 1: Add friend to group document
             db.collection("groups").document(groupID).updateData([
                 "members": FieldValue.arrayUnion([friendID])
             ]) { error in
@@ -677,7 +929,6 @@ struct AddMembersView: View {
                     return
                 }
 
-                // Step 2: Add group name to friend's user document
                 db.collection("users").document(friendID).updateData([
                     "groups": FieldValue.arrayUnion([groupName])
                 ]) { userError in
@@ -694,15 +945,24 @@ struct AddMembersView: View {
     }
 }
 
-
 struct GroupSettings: View {
     var groupName: String
+    var onLeaveGroup: (() -> Void)? = nil
+    @EnvironmentObject var auth: fireAuth
+    @Environment(\.dismiss) var dismiss
+    
     @State private var notificationsEnabled = true
     @State private var isPrivate = false
     @State private var totalScreenTime = true
     @State private var socialMediaTime = true
     @State private var habitsScore = true
-
+    
+    @State private var groupDocID: String?
+    @State private var creatorID: String?
+    @State private var members: [String] = []
+    
+    @State private var shouldTriggerOnLeave = false
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -718,8 +978,111 @@ struct GroupSettings: View {
                     Toggle("Share my digital habits score", isOn: $habitsScore)
                         .tint(.green)
                 }
+                
+                if let currentUID = auth.user?.uid {
+                    if creatorID == currentUID {
+                        Section {
+                            Button(role: .destructive) {
+                                deleteGroup()
+                            } label: {
+                                Label("Delete Group", systemImage: "trash")
+                            }
+                        }
+                    } else if members.contains(currentUID) {
+                        Section {
+                            Button(role: .destructive) {
+                                leaveGroup(currentUID: currentUID)
+                            } label: {
+                                Label("Leave Group", systemImage: "arrowshape.turn.up.left")
+                            }
+                        }
+                    }
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear(perform: loadGroupData)
+            .onDisappear {
+                if shouldTriggerOnLeave {
+                    onLeaveGroup?()
+                }
+            }
+        }
+    }
+    
+    private func loadGroupData() {
+        let db = Firestore.firestore()
+        db.collection("groups").whereField("name", isEqualTo: groupName).getDocuments { snapshot, error in
+            guard let doc = snapshot?.documents.first else {
+                print("Group not found")
+                return
+            }
+            groupDocID = doc.documentID
+            let data = doc.data()
+            creatorID = data["creator"] as? String
+            members = data["members"] as? [String] ?? []
+        }
+    }
+    
+    private func leaveGroup(currentUID: String) {
+        guard let groupDocID = groupDocID else { return }
+        let db = Firestore.firestore()
+
+        db.collection("groups").document(groupDocID).updateData([
+            "members": FieldValue.arrayRemove([currentUID])
+        ]) { error in
+            if let error = error {
+                print("Failed to leave group: \(error.localizedDescription)")
+            } else {
+                print("Successfully left group")
+
+                db.collection("users").document(currentUID).updateData([
+                    "groups": FieldValue.arrayRemove([groupName])
+                ])
+                dismiss()
+                shouldTriggerOnLeave = true
+            }
+        }
+    }
+    private func deleteGroup() {
+        guard let groupDocID = groupDocID else { return }
+        let db = Firestore.firestore()
+
+        db.collection("groups").document(groupDocID).getDocument { snapshot, error in
+            guard let doc = snapshot, doc.exists, let data = doc.data() else {
+                print("Failed to get group data for deletion")
+                return
+            }
+
+            let members = data["members"] as? [String] ?? []
+
+            db.collection("groups").document(groupDocID).delete { error in
+                if let error = error {
+                    print("Failed to delete group: \(error.localizedDescription)")
+                    return
+                }
+
+                print("Group deleted successfully")
+
+                let batch = db.batch()
+                for memberUID in members {
+                    let memberRef = db.collection("users").document(memberUID)
+                    batch.updateData([
+                        "groups": FieldValue.arrayRemove([groupName])
+                    ], forDocument: memberRef)
+                }
+
+                batch.commit { batchError in
+                    if let batchError = batchError {
+                        print("Failed to update members' groups: \(batchError.localizedDescription)")
+                    } else {
+                        print("Removed group from all members' group lists")
+                        DispatchQueue.main.async {
+                            dismiss()
+                            shouldTriggerOnLeave = true
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -168,43 +168,33 @@
 		};
 		FBE8C3AD2E2146BE00E4B4F6 /* activityMonitor */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-
 			exceptions = (
 				FBE8C3B82E2146BE00E4B4F6 /* Exceptions for "activityMonitor" folder in "activityMonitor" target */,
 			);
-
 			path = activityMonitor;
 			sourceTree = "<group>";
 		};
 		FBE8C3C72E21477A00E4B4F6 /* shieldUI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-
 			exceptions = (
 				FBE8C3CF2E21477A00E4B4F6 /* Exceptions for "shieldUI" folder in "shieldUI" target */,
 			);
-
-
 			path = shieldUI;
 			sourceTree = "<group>";
 		};
 		FBE8C3D92E21478900E4B4F6 /* shieldAction */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-
 			exceptions = (
 				FBE8C3E12E21478900E4B4F6 /* Exceptions for "shieldAction" folder in "shieldAction" target */,
 			);
-
-
 			path = shieldAction;
 			sourceTree = "<group>";
 		};
 		FBE8C3EA2E21631900E4B4F6 /* activityReport */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-
 			exceptions = (
 				FBE8C3F62E21631900E4B4F6 /* Exceptions for "activityReport" folder in "activityReport" target */,
 			);
-
 			path = activityReport;
 			sourceTree = "<group>";
 		};

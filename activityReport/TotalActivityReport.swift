@@ -33,6 +33,17 @@ struct TotalActivityReport: DeviceActivityReportScene {
         let totalActivityDuration = await data.flatMap { $0.activitySegments }.reduce(0, {
             $0 + $1.totalActivityDuration
         })
+        
+        let sharedDefaults = UserDefaults(suiteName: "group.com.data.bettr")
+        sharedDefaults?.set(totalActivityDuration, forKey: "totalDuration")
+    
+
+        
+        
+        print("totalActivityDuration: \(totalActivityDuration)")
+        let storedDuration = sharedDefaults?.double(forKey: "totalDuration") ?? -1
+
+        print("stored totalDuration from UserDefaults: \(storedDuration)")
         return formatter.string(from: totalActivityDuration) ?? "No activity data"
     }
 }
