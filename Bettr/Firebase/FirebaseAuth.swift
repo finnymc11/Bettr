@@ -96,7 +96,6 @@ class fireAuth: ObservableObject {
         }
     }
 
-    // ✅ Add this method:
     func addFriend(friendUID: String, completion: @escaping (Error?) -> Void) {
         guard let currentUID = Auth.auth().currentUser?.uid else {
             completion(NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not logged in"]))
@@ -115,12 +114,10 @@ class fireAuth: ObservableObject {
             }
 
             if let docs = snapshot?.documents, !docs.isEmpty {
-                // Request already exists
                 completion(NSError(domain: "", code: 409, userInfo: [NSLocalizedDescriptionKey: "Friend request already sent"]))
                 return
             }
 
-            // Create new friend request
             let newRequest = [
                 "from": currentUID,
                 "to": friendUID,
@@ -138,7 +135,6 @@ class fireAuth: ObservableObject {
 
         let db = Firestore.firestore()
 
-        // Fetch requests
         db.collection("friendRequests")
             .whereField("to", isEqualTo: currentUID)
             .addSnapshotListener { snapshot, error in
@@ -168,7 +164,6 @@ class fireAuth: ObservableObject {
                 }
             }
 
-        // Fetch actual friends
         db.collection("users").document(currentUID).addSnapshotListener { snapshot, error in
             guard let data = snapshot?.data() else { return }
             let friendUIDs = data["friends"] as? [String] ?? []
@@ -198,7 +193,6 @@ class fireAuth: ObservableObject {
 
         let db = Firestore.firestore()
 
-        // Remove the request document
         let query = db.collection("friendRequests")
             .whereField("from", isEqualTo: fromUID)
             .whereField("to", isEqualTo: currentUID)
@@ -209,11 +203,9 @@ class fireAuth: ObservableObject {
                 doc.reference.delete()
             }
 
-            // Add each user to the other's friends list
             let currentUserRef = db.collection("users").document(currentUID)
             let fromUserRef = db.collection("users").document(fromUID)
 
-            // Add fromUID to current user's friends
             currentUserRef.updateData([
                 "friends": FieldValue.arrayUnion([fromUID])
             ]) { error in
@@ -223,8 +215,7 @@ class fireAuth: ObservableObject {
                     print("Added \(fromUID) to current user's friends")
                 }
             }
-            
-            // Add currentUID to fromUID's friends
+
             fromUserRef.updateData([
                 "friends": FieldValue.arrayUnion([currentUID])
             ]) { error in
@@ -262,7 +253,6 @@ class fireAuth: ObservableObject {
 
             let groupID = doc.documentID
 
-            // Delete the group document
             db.collection("groups").document(groupID).delete { deleteError in
                 if let deleteError = deleteError {
                     print("Error deleting group: \(deleteError.localizedDescription)")
@@ -272,7 +262,6 @@ class fireAuth: ObservableObject {
 
                 print("Deleted group \(name)")
 
-                // Remove group name from user's list
                 db.collection("users").document(currentUID).updateData([
                     "groups": FieldValue.arrayRemove([name])
                 ]) { userUpdateError in

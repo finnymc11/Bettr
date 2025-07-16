@@ -25,6 +25,7 @@ struct GroupDetail: View {
     @State private var membershipChecked = false
     @State private var isPrivateGroup: Bool = false
     @State private var hasSentJoinRequest = false
+    @State private var joinRequests: [SearchResultItem] = []
 
     var body: some View {
         List {
@@ -47,6 +48,35 @@ struct GroupDetail: View {
                                 .foregroundColor(.green)
                             Spacer()
                         }
+                    }
+                }
+            }
+            if auth.user?.uid == creatorID && !joinRequests.isEmpty {
+                Section(header: Text("Join Requests")) {
+                    ForEach(joinRequests, id: \.id) { request in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(request.title).bold()
+                                if let email = request.subtitle {
+                                    Text(email).font(.subheadline).foregroundColor(.blue.opacity(0.7))
+                                }
+                            }
+
+                            Spacer()
+
+                            Button("Accept") {
+                                acceptJoinRequest(request)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundColor(.blue)
+
+                            Button("Decline") {
+                                declineJoinRequest(request)
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundColor(.red)
+                        }
+                        .padding(.vertical, 6)
                     }
                 }
             }
@@ -102,6 +132,102 @@ struct GroupDetail: View {
             fetchGroupData()
             fetchMembers()
         }
+    }
+    
+    private func acceptJoinRequest(_ request: SearchResultItem) {
+        guard let groupDocID = groupDocID else { return }
+        let db = Firestore.firestore()
+
+        let groupRef = db.collection("groups").document(groupDocID)
+        let userRef = db.collection("users").document(request.id)
+
+        db.collection("grouprequest")
+            .whereField("userID", isEqualTo: request.id)
+            .whereField("groupID", isEqualTo: groupDocID)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching join request: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let doc = snapshot?.documents.first else {
+                    print("Join request not found for user: \(request.id)")
+                    return
+                }
+
+                let requestRef = doc.reference
+                let batch = db.batch()
+                
+                batch.updateData(["members": FieldValue.arrayUnion([request.id])], forDocument: groupRef)
+                batch.updateData(["groups": FieldValue.arrayUnion([groupName])], forDocument: userRef)
+                batch.deleteDocument(requestRef)
+
+                batch.commit { error in
+                    if let error = error {
+                        print("Failed to accept join request: \(error.localizedDescription)")
+                    } else {
+                        print("User \(request.id) added to group")
+                        fetchMembers()
+                        fetchJoinRequests()
+                    }
+                }
+            }
+    }
+
+    private func declineJoinRequest(_ request: SearchResultItem) {
+        guard let groupDocID = groupDocID else { return }
+        let db = Firestore.firestore()
+
+        db.collection("grouprequest")
+            .whereField("userID", isEqualTo: request.id)
+            .whereField("groupID", isEqualTo: groupDocID)
+            .getDocuments { snapshot, error in
+                guard let doc = snapshot?.documents.first else { return }
+                doc.reference.delete { err in
+                    if err == nil {
+                        fetchJoinRequests()
+                    }
+                }
+            }
+    }
+    
+    private func fetchJoinRequests() {
+        guard let groupDocID = groupDocID, let currentUID = auth.user?.uid, currentUID == creatorID else { return }
+
+        let db = Firestore.firestore()
+        db.collection("grouprequest")
+            .whereField("groupID", isEqualTo: groupDocID)
+            .getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else { return }
+
+                let userIDs = documents.compactMap { $0["userID"] as? String }.filter { !$0.isEmpty }
+
+                // 🔐 Fix: Prevent crash if userIDs is empty
+                guard !userIDs.isEmpty else {
+                    DispatchQueue.main.async {
+                        self.joinRequests = []
+                    }
+                    return
+                }
+
+                db.collection("users").whereField(FieldPath.documentID(), in: userIDs).getDocuments { userSnapshot, error in
+                    guard let userDocs = userSnapshot?.documents else { return }
+
+                    let fetchedRequests = userDocs.map { doc -> SearchResultItem in
+                        let userData = doc.data()
+                        return SearchResultItem(
+                            id: doc.documentID,
+                            title: userData["username"] as? String ?? "Unnamed",
+                            subtitle: userData["email"] as? String,
+                            type: .user
+                        )
+                    }
+
+                    DispatchQueue.main.async {
+                        self.joinRequests = fetchedRequests
+                    }
+                }
+            }
     }
     
     private func joinGroup() {
@@ -178,12 +304,17 @@ struct GroupDetail: View {
         let db = Firestore.firestore()
         db.collection("groups").whereField("name", isEqualTo: groupName).getDocuments { snapshot, error in
             guard let doc = snapshot?.documents.first else { return }
-            groupDocID = doc.documentID
+
             let data = doc.data()
-            creatorID = data["creator"] as? String
-            isPrivateGroup = data["private"] as? Bool ?? false
-            
-            checkIfJoinRequestExists()
+
+            DispatchQueue.main.async {
+                groupDocID = doc.documentID
+                creatorID = data["creator"] as? String
+                isPrivateGroup = data["private"] as? Bool ?? false
+                
+                checkIfJoinRequestExists()
+                fetchJoinRequests()
+            }
         }
     }
 
