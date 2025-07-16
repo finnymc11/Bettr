@@ -104,7 +104,7 @@ class fireAuth: ObservableObject {
         }
 
         let db = Firestore.firestore()
-        let friendshipQuery = db.collection("friendships")
+        let friendshipQuery = db.collection("friendRequests")
             .whereField("from", isEqualTo: currentUID)
             .whereField("to", isEqualTo: friendUID)
 
@@ -127,7 +127,7 @@ class fireAuth: ObservableObject {
                 "timestamp": Timestamp(date: Date())
             ] as [String: Any]
 
-            db.collection("friendships").addDocument(data: newRequest) { error in
+            db.collection("friendRequests").addDocument(data: newRequest) { error in
                 completion(error)
             }
         }
@@ -139,7 +139,7 @@ class fireAuth: ObservableObject {
         let db = Firestore.firestore()
 
         // Fetch requests
-        db.collection("friendships")
+        db.collection("friendRequests")
             .whereField("to", isEqualTo: currentUID)
             .addSnapshotListener { snapshot, error in
                 if let error = error {
@@ -199,7 +199,7 @@ class fireAuth: ObservableObject {
         let db = Firestore.firestore()
 
         // Remove the request document
-        let query = db.collection("friendships")
+        let query = db.collection("friendRequests")
             .whereField("from", isEqualTo: fromUID)
             .whereField("to", isEqualTo: currentUID)
 
@@ -305,6 +305,59 @@ class fireAuth: ObservableObject {
 
             DispatchQueue.main.async {
                 self.friends.removeAll { $0.id == uid }
+            }
+        }
+    }
+    func declineFriendRequest(fromUID: String) {
+        guard let currentUID = user?.uid else { return }
+        
+        let db = Firestore.firestore()
+        
+        let query = db.collection("friendRequests")
+            .whereField("from", isEqualTo: fromUID)
+            .whereField("to", isEqualTo: currentUID)
+        
+        query.getDocuments { snapshot, error in
+            if let error = error {
+                print("Error declining friend request: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let docs = snapshot?.documents else { return }
+            
+            for doc in docs {
+                doc.reference.delete { deleteError in
+                    if let deleteError = deleteError {
+                        print("Error deleting friend request doc: \(deleteError.localizedDescription)")
+                    } else {
+                        print("Friend request declined and removed")
+                        DispatchQueue.main.async {
+                            self.friendRequests.removeAll(where: { $0.id == fromUID })
+                        }
+                    }
+                }
+            }
+        }
+    }
+    func joinGroup(groupID: String, groupName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let currentUID = user?.uid else {
+            completion(.failure(NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not logged in"])))
+            return
+        }
+
+        let db = Firestore.firestore()
+        let groupRef = db.collection("groups").document(groupID)
+        let userRef = db.collection("users").document(currentUID)
+
+        let batch = db.batch()
+        batch.updateData(["members": FieldValue.arrayUnion([currentUID])], forDocument: groupRef)
+        batch.updateData(["groups": FieldValue.arrayUnion([groupName])], forDocument: userRef)
+
+        batch.commit { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
             }
         }
     }
