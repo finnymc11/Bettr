@@ -10,6 +10,8 @@ import FirebaseCore
 import UIKit
 import Firebase
 import FirebaseFirestore
+import FamilyControls
+import DeviceActivity
 
 class SearchBarFocusDelegate: NSObject, UISearchBarDelegate {
     var onFocus: () -> Void
@@ -35,7 +37,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct BettrApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
+
     @StateObject var auth = fireAuth()
     @State private var startUp = false
     @State private var currentScreen: Screen = .splash
@@ -53,9 +55,6 @@ struct BettrApp: App {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 startUp = true
                                 if auth.user != nil {
-                                    let sharedDefaults = UserDefaults(suiteName: "group.com.finbar.Bettr")
-                                    let totalDuration = sharedDefaults?.double(forKey: "totalDuration") ?? 0
-                                    print("totalDuration in startup: \(totalDuration)")
                                     currentScreen = .home
                                 }else{
                                     currentScreen = .signUp

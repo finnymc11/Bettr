@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-    <dict>
-        <key>com.apple.developer.family-controls</key>
-        <true/>
-    </dict>
+<dict>
+	<key>com.apple.developer.family-controls</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.data.bettr</string>
+		<string>group.CY-9A6F8188-6C3A-11E9-8EB7-3AF9D32EA568.com.cydia.Extender</string>
+	</array>
+</dict>
 </plist>
