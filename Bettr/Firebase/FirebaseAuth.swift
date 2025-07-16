@@ -347,17 +347,30 @@ class fireAuth: ObservableObject {
 
         let db = Firestore.firestore()
         let groupRef = db.collection("groups").document(groupID)
-        let userRef = db.collection("users").document(currentUID)
 
-        let batch = db.batch()
-        batch.updateData(["members": FieldValue.arrayUnion([currentUID])], forDocument: groupRef)
-        batch.updateData(["groups": FieldValue.arrayUnion([groupName])], forDocument: userRef)
+        groupRef.getDocument { snapshot, error in
+            guard let data = snapshot?.data(), error == nil else {
+                completion(.failure(error ?? NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Group not found"])))
+                return
+            }
 
-        batch.commit { error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(()))
+            let isPrivate = data["private"] as? Bool ?? false
+            if isPrivate {
+                completion(.failure(NSError(domain: "", code: 403, userInfo: [NSLocalizedDescriptionKey: "This group is private"])))
+                return
+            }
+
+            let userRef = db.collection("users").document(currentUID)
+            let batch = db.batch()
+            batch.updateData(["members": FieldValue.arrayUnion([currentUID])], forDocument: groupRef)
+            batch.updateData(["groups": FieldValue.arrayUnion([groupName])], forDocument: userRef)
+
+            batch.commit { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
             }
         }
     }
