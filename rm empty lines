@@ -1,0 +1,4 @@
+delete empty lines
+command + option + f, make sure its "regular expression"
+paste in search field
+leave replace field empty
