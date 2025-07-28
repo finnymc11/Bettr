@@ -10,7 +10,6 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 
-
 class fireAuth: ObservableObject {
     @Published var user: FirebaseAuth.User?
     @Published var friendRequests: [SearchResultItem] = []
@@ -18,21 +17,21 @@ class fireAuth: ObservableObject {
 
     private var authStateListener: AuthStateDidChangeListenerHandle?
     private var listener: ListenerRegistration?
-    
+
     init() {
         authStateListener = FirebaseAuth.Auth.auth().addStateDidChangeListener { auth, user in
             self.user = user
             self.fetchFriendRequests()
         }
     }
-    
+
     deinit {
         if let handle = authStateListener {
             Auth.auth().removeStateDidChangeListener(handle)
             authStateListener = nil
         }
     }
-    
+
     func signIn(email: String, password: String, completion: @escaping (Bool, Error?) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             guard self != nil else { return }
@@ -45,7 +44,7 @@ class fireAuth: ObservableObject {
             }
         }
     }
-    
+
     func createUser(email: String, password: String, username: String, completion: @escaping (Bool, Error?) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
             guard self != nil else { return }
@@ -129,7 +128,7 @@ class fireAuth: ObservableObject {
             }
         }
     }
-    
+
     func fetchFriendRequests() {
         guard let currentUID = user?.uid else { return }
 
@@ -299,21 +298,21 @@ class fireAuth: ObservableObject {
     }
     func declineFriendRequest(fromUID: String) {
         guard let currentUID = user?.uid else { return }
-        
+
         let db = Firestore.firestore()
-        
+
         let query = db.collection("friendRequests")
             .whereField("from", isEqualTo: fromUID)
             .whereField("to", isEqualTo: currentUID)
-        
+
         query.getDocuments { snapshot, error in
             if let error = error {
                 print("Error declining friend request: \(error.localizedDescription)")
                 return
             }
-            
+
             guard let docs = snapshot?.documents else { return }
-            
+
             for doc in docs {
                 doc.reference.delete { deleteError in
                     if let deleteError = deleteError {
@@ -353,7 +352,6 @@ class fireAuth: ObservableObject {
             let batch = db.batch()
             batch.updateData(["members": FieldValue.arrayUnion([currentUID])], forDocument: groupRef)
             batch.updateData(["groups": FieldValue.arrayUnion([groupName])], forDocument: userRef)
-
             batch.commit { error in
                 if let error = error {
                     completion(.failure(error))

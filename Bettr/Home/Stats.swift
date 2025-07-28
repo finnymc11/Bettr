@@ -8,7 +8,18 @@ import SwiftUI
 import DeviceActivity
 import DeviceActivity
 struct statsView: View{
+	private var filter: DeviceActivityFilter{
+		let start = Calendar.current.startOfDay(for: Date())
+		let now = Date()
+		return DeviceActivityFilter(
+			segment: .daily(during: DateInterval(start: start, end: now)),
+			users: .all,
+			devices: .init([.iPhone])
+		)
+	}
 var body: some View{
+	let context: DeviceActivityReport.Context = .detailedView
+
 	NavigationStack {
 		VStack(spacing: 0) {
 			VStack{
@@ -18,7 +29,11 @@ var body: some View{
 				Text("Behavioral Analysis")
 					.foregroundColor(.white)
 					.font(.system(size: 40))
-					.padding(.bottom, 400)
+					.padding()
+
+					DeviceActivityReport(context, filter: filter)
+
+
 			}.cStyle1()
 				.toolbar {
 					ToolbarItem(placement: .principal) {

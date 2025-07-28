@@ -12,7 +12,7 @@ import DeviceActivity
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
-        
+		
         // Handle the start of the interval.
     }
     

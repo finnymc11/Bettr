@@ -10,47 +10,15 @@ import SwiftUI
 import ManagedSettings
 
 extension DeviceActivityReport.Context {
-    // If your app initializes a DeviceActivityReport with this context, then the system will use
-    // your extension's corresponding DeviceActivityReportScene to render the contents of the
-    // report.
-    static let totalActivity = Self("Total Activity")
-    static let pieChart = Self("Pie Chart")
-    static let barView = Self("Progress Bar")
+	static let pieChart = Self("Pie Chart")
+	static let barView = Self("Progress Bar")
+	static let detailedView = Self("Detailed View")
 }
 
-//struct TotalActivityReport: DeviceActivityReportScene {
-//    // Define which context your scene will represent.
-//    let context: DeviceActivityReport.Context = .totalActivity
-//    
-//    // Define the custom configuration and the resulting view for this report.
-//    let content: (String) -> TotalActivityView
-//    
-//    func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> String {
-//        // Reformat the data into a configuration that can be used to create
-//        // the report's view.
-//        let formatter = DateComponentsFormatter()
-//        formatter.allowedUnits = [.day, .hour, .minute, .second]
-//        formatter.unitsStyle = .abbreviated
-//        formatter.zeroFormattingBehavior = .dropAll
-//        
-//        let totalActivityDuration = await data.flatMap { $0.activitySegments }.reduce(0, {
-//            $0 + $1.totalActivityDuration
-//        })
-//        
-//        let sharedDefaults = UserDefaults(suiteName: "group.com.data.bettr")
-//        sharedDefaults?.set(totalActivityDuration, forKey: "totalDuration")
-//
-//        print("total activity report ext: totalActivityDuration: \(totalActivityDuration)")
-//        let storedDuration = sharedDefaults?.double(forKey: "totalDuration") ?? -1
-//        
-//        print("total activity report ext:  stored totalDuration from UserDefaults: \(storedDuration)")
-//        return formatter.string(from: totalActivityDuration) ?? "No activity data"
-//    }
-//}
 struct PieChartReport: DeviceActivityReportScene {
     let context: DeviceActivityReport.Context = .pieChart
     let content: (Double) -> PieChartView
-    
+
     func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> Double {
         let totalActivityDuration = await data.flatMap { $0.activitySegments }.reduce(0, {
             $0 + $1.totalActivityDuration
@@ -58,21 +26,86 @@ struct PieChartReport: DeviceActivityReportScene {
         let hours = totalActivityDuration / 3600 // convert from seconds to hours
         return hours
     }
-        
 }
 
 struct progressBarReport: DeviceActivityReportScene {
+
     let context: DeviceActivityReport.Context = .barView
-    
-    
+
     let content: (Double) -> ProgressBarView
-    
+
     func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> Double {
         let totalActivityDuration = await data.flatMap { $0.activitySegments }.reduce(0, {
             $0 + $1.totalActivityDuration
         })
         let hours = totalActivityDuration / 3600 // convert from seconds to hours
+		print("store to userdefault")
+		await storeScreenTimeData(totalHours: hours, rawData: data)
+//		await storeScreenTimeData(data: data)
+
         return hours
     }
-        
+
+//	 func storeScreenTimeData(totalHours: Double, rawData: DeviceActivityResults<DeviceActivityData>) async {
+//		let suiteName = "group.com.data.bettr"
+//		guard UserDefaults(suiteName:suiteName) != nil else{
+//			print("wrong suite name")
+//			return
+//		}
+//		let detailedData = await extractDetailedData(from: rawData)
+//			let screenTimeData = ScreenTimeData(
+//				date: Date(),
+//				totalHours: totalHours,
+//				totalSeconds: totalHours * 3600,
+//				appUsage: detailedData.appUsage,
+//				categoryUsage: detailedData.categoryUsage
+//			)
+//
+//			do {
+//				let jsonData = try JSONEncoder().encode(screenTimeData)
+//				let timestamp = Int(Date().timeIntervalSince1970)
+//				let key = "screentime_\(timestamp)"
+//				UserDefaults.standard.set(jsonData, forKey: key)
+////				sharedDefaults.set(jsonData, forKey: key)
+//				print("✅ Screen time data stored in UserDefaults with key: \(key)")
+//
+////				for key in UserDefaults.standard.dictionaryRepresentation().keys where key.hasPrefix("screentime_") {
+////					print("🗂️ Found screen time key: \(key)")
+////					printAllStoredScreenTimeData()
+////				}
+//				printLatestScreenTimeData()
+//
+//			} catch {
+//				print("❌ Failed to encode screen time data: \(error)")
+//			}
+//	}
+
+}
+
+struct detailedReport: DeviceActivityReportScene {
+	let context: DeviceActivityReport.Context = .detailedView
+
+	let content: (ScreenTimeData) -> HorizontalBarChartView
+
+	func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> ScreenTimeData {
+		let totalActivityDuration = await data.flatMap {$0.activitySegments}.reduce(0,{
+			$0 + $1.totalActivityDuration
+		})
+		let hours = totalActivityDuration / 3600
+
+
+		let detailedData = await extractDetailedData(from: data)
+		let screenTimeData = ScreenTimeData(
+			date: Date(),
+			totalHours: hours,
+			totalSeconds: hours * 3600,
+			appUsage: detailedData.appUsage,
+			categoryUsage: detailedData.categoryUsage
+		)
+		return screenTimeData
+
+
+	}
+
+
 }

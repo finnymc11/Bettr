@@ -9,6 +9,7 @@ import Foundation
 import FamilyControls
 import ManagedSettings
 import DeviceActivity
+import _DeviceActivity_SwiftUI
 
 
 
@@ -16,13 +17,12 @@ extension DeviceActivityName{
     static let daily = Self("daily")
 }
 
-//extension DeviceActivityReport.Context {
-//    static let daily = Self("daily")
-//}
-
+extension DeviceActivityReport.Context {
+	static let detailedView = Self("Detailed View")
+	static let pieChart = Self("Pie Chart")
+	static let barView = Self("Progress Bar")
+}
 class ScreenTimeModel: ObservableObject {
-    
-    
     static let shared = ScreenTimeModel()
     private let store = ManagedSettingsStore()
     private let center = DeviceActivityCenter()
@@ -57,7 +57,14 @@ class ScreenTimeModel: ObservableObject {
     }
     
    
-    
+
+
+	   private func formattedDate() -> String {
+		   let formatter = DateFormatter()
+		   formatter.dateFormat = "yyyy-MM-dd"
+		   return formatter.string(from: Date())
+	   }
+
     func saveSelection(){
         do{
             let data = try JSONEncoder().encode(appSelection)
@@ -89,7 +96,6 @@ class ScreenTimeModel: ObservableObject {
         let schedule = DeviceActivitySchedule(
             intervalStart: DateComponents(hour: 0, minute: 0),
             intervalEnd: DateComponents(hour: 23, minute: 59),
-            
             repeats: true
         
         )

@@ -6,9 +6,13 @@
 //
 import SwiftUI
 import DeviceActivity
-extension DeviceActivityReport.Context {
-	static let barView = Self("Progress Bar")
-}
+
+
+//extension DeviceActivityReport.Context {
+//	static let barView = Self("Progress Bar")
+//	    static let pieChart = Self("Pie Chart")
+//
+//}
 struct Home: View {
 	@State private var selection: Int = 1
 	var body: some View {
@@ -18,7 +22,7 @@ struct Home: View {
 					Label("Stats", systemImage: "hourglass")
 				}.tag(0)
 			homeView()
-				.tabItem {
+				.tabItem {  
 					Label("Home", systemImage: "house.fill")
 				}.tag(1)
 			friendView()
@@ -32,7 +36,8 @@ struct Home: View {
 struct homeView: View {
 	@State private var currentScreen: BettrApp.Screen = .home
 	let context : DeviceActivityReport.Context = .barView
-	@State private var id = UUID()
+	@StateObject var model = ScreenTimeModel.shared
+
 	private var filter : DeviceActivityFilter{
 		let start = Calendar.current.startOfDay(for: Date())
 		let now = Date()
@@ -42,26 +47,27 @@ struct homeView: View {
 			devices: .init([.iPhone])
 		)
 	}
+
 	@State private var showLoading = true
 	var body: some View {
+
 		NavigationStack {
 			ZStack {
 				Spacer()
 				DeviceActivityReport(context, filter: filter).hidden()
-//				ZStack{
-
 					VStack{
 						if showLoading{
 							ProgressView().progressViewStyle(.circular).scaleEffect(1.0)
 						}else{
 							DeviceActivityReport(context, filter: filter)
 						}
-
 					}
-//				}
+
 				.padding(.horizontal, 40)
 				Spacer()
 			}.onAppear{
+
+				print("bruh")
 				DispatchQueue.main.asyncAfter(deadline: .now()+5){
 					showLoading = false
 				}
@@ -73,6 +79,7 @@ struct homeView: View {
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					NavigationLink(destination: SettingsView(currentScreen: $currentScreen)) {
+
 						Image(systemName: "gear").font(.system(size: 20))
 					}
 				}
@@ -84,6 +91,6 @@ struct homeView: View {
 	}
 
 }
-#Preview {
-	homeView()
-}
+//#Preview {
+//	homeView()
+//}

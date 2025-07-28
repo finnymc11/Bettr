@@ -19,7 +19,8 @@ struct ProgressBarView: View {
 		return Int(totalActivity)
 	}
 	var screenTimeProgress : Double {
-		totalActivity / goalTime
+//		totalActivity / goalTime
+		min(totalActivity / goalTime, 1.0)
 	}
 	var progressColor: Color {
 		switch screenTimeProgress {

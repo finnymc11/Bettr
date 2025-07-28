@@ -26,6 +26,7 @@ class SearchBarFocusDelegate: NSObject, UISearchBarDelegate {
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+//	let sharedDefaults = UserDefaults(suiteName: "group.com.data.bettr")
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
@@ -55,6 +56,7 @@ struct BettrApp: App {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 startUp = true
                                 if auth.user != nil {
+									print("bruh")
                                     currentScreen = .home
                                 }else{
                                     currentScreen = .signUp
@@ -89,6 +91,7 @@ struct BettrApp: App {
             }
             .preferredColorScheme(.dark)
             .environmentObject(auth)
+
             .onReceive(auth.$user) { user in
                 if user == nil && currentScreen == .home {
                     currentScreen = .signUp

@@ -17,7 +17,6 @@
 		FBE8C3AC2E2146BE00E4B4F6 /* DeviceActivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE8C3AB2E2146BE00E4B4F6 /* DeviceActivity.framework */; };
 		FBE8C3B42E2146BE00E4B4F6 /* activityMonitor.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FBE8C3AA2E2146BE00E4B4F6 /* activityMonitor.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FBE8C3C42E21477A00E4B4F6 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE8C3C32E21477A00E4B4F6 /* ManagedSettings.framework */; };
-		FBE8C3C62E21477A00E4B4F6 /* ManagedSettingsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE8C3C52E21477A00E4B4F6 /* ManagedSettingsUI.framework */; };
 		FBE8C3CE2E21477A00E4B4F6 /* shieldUI.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FBE8C3C22E21477A00E4B4F6 /* shieldUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FBE8C3D82E21478900E4B4F6 /* ManagedSettings.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE8C3C32E21477A00E4B4F6 /* ManagedSettings.framework */; };
 		FBE8C3E02E21478900E4B4F6 /* shieldAction.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FBE8C3D72E21478900E4B4F6 /* shieldAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -114,7 +113,6 @@
 		FBE8C3AB2E2146BE00E4B4F6 /* DeviceActivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DeviceActivity.framework; path = System/Library/Frameworks/DeviceActivity.framework; sourceTree = SDKROOT; };
 		FBE8C3C22E21477A00E4B4F6 /* shieldUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shieldUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBE8C3C32E21477A00E4B4F6 /* ManagedSettings.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettings.framework; path = System/Library/Frameworks/ManagedSettings.framework; sourceTree = SDKROOT; };
-		FBE8C3C52E21477A00E4B4F6 /* ManagedSettingsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ManagedSettingsUI.framework; path = Library/Frameworks/ManagedSettingsUI.framework; sourceTree = DEVELOPER_DIR; };
 		FBE8C3D72E21478900E4B4F6 /* shieldAction.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shieldAction.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBE8C3E92E21631900E4B4F6 /* activityReport.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = activityReport.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -147,6 +145,14 @@
 				Info.plist,
 			);
 			target = FBE8C3E82E21631900E4B4F6 /* activityReport */;
+		};
+		FBEF29852E283B30004BA6E7 /* Exceptions for "activityReport" folder in "Bettr" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				chartView.swift,
+				progressBarView.swift,
+			);
+			target = 928A70CA2E0753E2005E93FE /* Bettr */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -193,6 +199,7 @@
 		FBE8C3EA2E21631900E4B4F6 /* activityReport */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				FBEF29852E283B30004BA6E7 /* Exceptions for "activityReport" folder in "Bettr" target */,
 				FBE8C3F62E21631900E4B4F6 /* Exceptions for "activityReport" folder in "activityReport" target */,
 			);
 			path = activityReport;
@@ -242,7 +249,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBE8C3C42E21477A00E4B4F6 /* ManagedSettings.framework in Frameworks */,
-				FBE8C3C62E21477A00E4B4F6 /* ManagedSettingsUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,7 +304,6 @@
 			children = (
 				FBE8C3AB2E2146BE00E4B4F6 /* DeviceActivity.framework */,
 				FBE8C3C32E21477A00E4B4F6 /* ManagedSettings.framework */,
-				FBE8C3C52E21477A00E4B4F6 /* ManagedSettingsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
