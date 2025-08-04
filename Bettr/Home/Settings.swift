@@ -13,6 +13,7 @@ struct SettingsView: View {
     @EnvironmentObject var auth: fireAuth
     @State private var showTab = false
     @State private var showPicker = false
+    @State private var goalThreshold: Double = UserDefaults(suiteName: "group.com.data.bettr")?.double(forKey: "goalThreshold") ?? 2.0
     var body: some View {
         NavigationStack{
             VStack{
@@ -21,6 +22,17 @@ struct SettingsView: View {
                         .foregroundColor(.gray)
                 }
                 List{
+                    Section(header: Text("Graph Goal")) {
+                        HStack {
+                            Text("Daily Goal: \(goalThreshold, specifier: "%.1f") hrs")
+                            Spacer()
+                        }
+                        Slider(value: $goalThreshold, in: 0...6, step: 0.1)
+                            .onChange(of: goalThreshold) { newValue in
+                                let sharedDefaults = UserDefaults(suiteName: "group.com.data.bettr")
+                                sharedDefaults?.set(newValue, forKey: "goalThreshold")
+                            }
+                    }
                     Section(header: Text("Account")){
                         Button("Log Out"){
                             auth.signOut()
@@ -32,6 +44,9 @@ struct SettingsView: View {
                             showPicker.toggle()
                         }.familyActivityPicker(isPresented: $showPicker, selection: $model.appSelection)
                             .settingsButtStyle()
+                        Button("Print Saved Apps") {
+                            print("Saved Apps: \(model.appSelection.applicationTokens)")
+                        }
 
 
                            

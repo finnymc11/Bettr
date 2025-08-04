@@ -10,6 +10,16 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
+import UserNotifications
+
+func requestNotificationPermission() {
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+        if let error = error {
+            print("Notification error: \(error)")
+        }
+    }
+}
+
 struct friendView: View {
     @State private var searchText = ""
     @State private var showingCreateGroup = false
@@ -100,6 +110,7 @@ struct friendView: View {
             .onAppear {
                 searchVM.currentUserID = auth.user?.uid ?? Auth.auth().currentUser?.uid
                 searchVM.loadSentRequests()
+                requestNotificationPermission()
             }
         }
     }

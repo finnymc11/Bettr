@@ -9,31 +9,30 @@ import Foundation
 import FamilyControls
 import ManagedSettings
 import DeviceActivity
-
-
+import _DeviceActivity_SwiftUI
 
 extension DeviceActivityName{
     static let daily = Self("daily")
 }
 
-//extension DeviceActivityReport.Context {
-//    static let daily = Self("daily")
-//}
+extension DeviceActivityReport.Context {
+	static let detailedView = Self("Detailed View")
+	static let pieChart = Self("Pie Chart")
+	static let barView = Self("Progress Bar")
+    static let timeGraph = Self("Time Graph")
+}
 
 class ScreenTimeModel: ObservableObject {
-    
-    
     static let shared = ScreenTimeModel()
     private let store = ManagedSettingsStore()
     private let center = DeviceActivityCenter()
     private let selectionKey = "appSelectionKey"
-    private let appGroupDefaults =  UserDefaults(suiteName: "group.com.data.Bettr")
     
     private init(){
         loadSelection()
     }
     
-    var appSelection = FamilyActivitySelection() {
+    @Published var appSelection = FamilyActivitySelection() {
         willSet{
             let applications = newValue.applicationTokens
             let categories = newValue.categoryTokens
@@ -57,39 +56,69 @@ class ScreenTimeModel: ObservableObject {
     }
     
    
-    
-    func saveSelection(){
-        do{
-            let data = try JSONEncoder().encode(appSelection)
-            UserDefaults.standard.set(data, forKey: selectionKey)
 
-            
-            
-        }catch{
-            print("save selection")
+
+	   private func formattedDate() -> String {
+		   let formatter = DateFormatter()
+		   formatter.dateFormat = "yyyy-MM-dd"
+		   return formatter.string(from: Date())
+	   }
+
+//    func saveSelection(){
+//        do{
+//            let data = try JSONEncoder().encode(appSelection)
+//            UserDefaults.standard.set(data, forKey: selectionKey)
+//
+//            
+//            
+//        }catch{
+//            print("save selection")
+//            print("Error saving selection: \(error.localizedDescription)")
+//        }
+//    }
+//    
+//    func loadSelection(){
+//        guard let data = UserDefaults.standard.data(forKey: selectionKey) else {return}
+//
+//        do{
+//            let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
+//            DispatchQueue.main.async {
+//                self.appSelection = selection
+//            }
+//        }catch{
+//            print("load selection selection")
+//            print("error loading selection: \(error.localizedDescription)")
+//        }
+//    }
+    func saveSelection() {
+        do {
+            let data = try JSONEncoder().encode(appSelection)
+            let defaults = UserDefaults(suiteName: "group.com.data.bettr")
+            defaults?.set(data, forKey: selectionKey)
+        } catch {
             print("Error saving selection: \(error.localizedDescription)")
         }
     }
-    
-    func loadSelection(){
-        guard let data = UserDefaults.standard.data(forKey: selectionKey) else {return}
 
-        do{
+    func loadSelection() {
+        let defaults = UserDefaults(suiteName: "group.com.data.bettr")
+        guard let data = defaults?.data(forKey: selectionKey) else { return }
+
+        do {
             let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
             DispatchQueue.main.async {
                 self.appSelection = selection
             }
-        }catch{
-            print("load selection selection")
-            print("error loading selection: \(error.localizedDescription)")
+        } catch {
+            print("Error loading selection: \(error.localizedDescription)")
         }
     }
+
     
     func initActivityMonitor(){
         let schedule = DeviceActivitySchedule(
             intervalStart: DateComponents(hour: 0, minute: 0),
             intervalEnd: DateComponents(hour: 23, minute: 59),
-            
             repeats: true
         
         )
@@ -104,7 +133,4 @@ class ScreenTimeModel: ObservableObject {
     func stopActivityMonitor(){
         center.stopMonitoring()
     }
-    
-    
-    
 }

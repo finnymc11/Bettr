@@ -6,7 +6,6 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.CY-9A6F8188-6C3A-11E9-8EB7-3AF9D32EA568.com.cydia.Extender</string>
 		<string>group.com.data.bettr</string>
 	</array>
 </dict>
