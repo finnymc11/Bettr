@@ -12,23 +12,16 @@ import SwiftUI
 struct activityReport: DeviceActivityReportExtension {
 	
     var body: some DeviceActivityReportScene {
-        // Create a report for each DeviceActivityReport.Context that your app supports.
-//		TotalActivityReport { totalActivity in
-//			TotalActivityView(totalActivity: totalActivity)
-//		}
-        PieChartReport { totalActivity in
-            return PieChartView(totalActivity: totalActivity, totalHours: 4.0) // or any custom goal
+        progressBarReport { totalScreenTime in
+			return ProgressBarView(goalTime: 8, totalActivity: totalScreenTime)
         }
         
-        progressBarReport { totalScreenTime in
-			return ProgressBarView(goalTime: 4.5, totalActivity: totalScreenTime)
-        }
-        // Add more reports here...
-
 		detailedReport { screenTimeData in
-			return HorizontalBarChartView( data: screenTimeData, showApps: true)
-
+			return HorizontalBarChartView(data: screenTimeData, showApps: true)
 		}
-
+        
+        TimeGraphReport { screenTimeHistory in
+            return TimeGraphView(data: screenTimeHistory)
+        }
     }
 }

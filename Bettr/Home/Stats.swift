@@ -7,51 +7,45 @@
 import SwiftUI
 import DeviceActivity
 import DeviceActivity
+
 struct statsView: View{
-	private var filter: DeviceActivityFilter{
-		let start = Calendar.current.startOfDay(for: Date())
-		let now = Date()
-		return DeviceActivityFilter(
-			segment: .daily(during: DateInterval(start: start, end: now)),
-			users: .all,
-			devices: .init([.iPhone])
-		)
-	}
-var body: some View{
-	let context: DeviceActivityReport.Context = .detailedView
-
-	NavigationStack {
-		VStack(spacing: 0) {
-			VStack{
-				Text("🧠")
-					.font(.system(size: 96))
-					.padding(.bottom, -15)
-				Text("Behavioral Analysis")
-					.foregroundColor(.white)
-					.font(.system(size: 40))
-					.padding()
-
-					DeviceActivityReport(context, filter: filter)
-
-
-			}.cStyle1()
-				.toolbar {
-					ToolbarItem(placement: .principal) {
-						HStack {
-							Text("Stats")
-								.font(.system(size: 24, weight: .bold))
-								.foregroundColor(.white)
-							Spacer()
-						}
-					}
-					ToolbarItem(placement: .navigationBarTrailing) {
-						NavigationLink(destination: InfoView()) {
-							Image(systemName: "info")
-								.font(.system(size: 20))
-						}
-					}
-				}
-			}
-		}
-	}
+    @State private var averageTime: Double = 0.0
+    
+    private var filter: DeviceActivityFilter{
+        let start = Calendar.current.startOfDay(for: Date())
+        let now = Date()
+        return DeviceActivityFilter(
+            segment: .daily(during: DateInterval(start: start, end: now)),
+            users: .all,
+            devices: .init([.iPhone])
+        )
+    }
+    var body: some View{
+        let context: DeviceActivityReport.Context = .timeGraph
+        let context2: DeviceActivityReport.Context = .detailedView
+        
+        NavigationStack {
+            VStack{
+                DeviceActivityReport(context, filter: filter)
+                DeviceActivityReport(context2, filter: filter)
+                    .cStyle1()
+                    .toolbar {
+                        ToolbarItem(placement: .principal) {
+                            HStack {
+                                Text("Statistics")
+                                    .font(.system(size: 24, weight: .bold))
+                                    .foregroundColor(.white)
+                                Spacer()
+                            }
+                        }
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            NavigationLink(destination: InfoView()) {
+                                Image(systemName: "info")
+                                    .font(.system(size: 20))
+                            }
+                        }
+                    }
+            }
+        }
+    }
 }

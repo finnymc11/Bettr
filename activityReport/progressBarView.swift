@@ -12,14 +12,10 @@ import Foundation
 struct ProgressBarView: View {
 	let goalTime: Double
 	let totalActivity: Double
-	//progressTime total/goal
-	//exceedingGoal t/f
-	//goalTime userInput
 	var hours: Int{
 		return Int(totalActivity)
 	}
 	var screenTimeProgress : Double {
-//		totalActivity / goalTime
 		min(totalActivity / goalTime, 1.0)
 	}
 	var progressColor: Color {

@@ -60,7 +60,7 @@
       <RemoteRunnable
          runnableDebuggingMode = "0"
          BundleIdentifier = "bettr.Bettr"
-         RemotePath = "/var/containers/Bundle/Application/36F833BD-F2FB-4206-A468-FF17B456BF12/Bettr.app">
+         RemotePath = "/var/containers/Bundle/Application/F060F486-7252-4425-9A3A-662E079DE416/Bettr.app">
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference

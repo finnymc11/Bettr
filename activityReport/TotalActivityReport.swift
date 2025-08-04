@@ -8,78 +8,30 @@
 import DeviceActivity
 import SwiftUI
 import ManagedSettings
+import Charts
 
 extension DeviceActivityReport.Context {
 	static let pieChart = Self("Pie Chart")
 	static let barView = Self("Progress Bar")
 	static let detailedView = Self("Detailed View")
-}
-
-struct PieChartReport: DeviceActivityReportScene {
-    let context: DeviceActivityReport.Context = .pieChart
-    let content: (Double) -> PieChartView
-
-    func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> Double {
-        let totalActivityDuration = await data.flatMap { $0.activitySegments }.reduce(0, {
-            $0 + $1.totalActivityDuration
-        })
-        let hours = totalActivityDuration / 3600 // convert from seconds to hours
-        return hours
-    }
+    static let timeGraph = Self("Time Graph")
 }
 
 struct progressBarReport: DeviceActivityReportScene {
-
     let context: DeviceActivityReport.Context = .barView
-
     let content: (Double) -> ProgressBarView
-
     func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> Double {
         let totalActivityDuration = await data.flatMap { $0.activitySegments }.reduce(0, {
             $0 + $1.totalActivityDuration
         })
         let hours = totalActivityDuration / 3600 // convert from seconds to hours
 		print("store to userdefault")
+        
+        //Screen time data stored in user defaults
 		await storeScreenTimeData(totalHours: hours, rawData: data)
-//		await storeScreenTimeData(data: data)
 
         return hours
     }
-
-//	 func storeScreenTimeData(totalHours: Double, rawData: DeviceActivityResults<DeviceActivityData>) async {
-//		let suiteName = "group.com.data.bettr"
-//		guard UserDefaults(suiteName:suiteName) != nil else{
-//			print("wrong suite name")
-//			return
-//		}
-//		let detailedData = await extractDetailedData(from: rawData)
-//			let screenTimeData = ScreenTimeData(
-//				date: Date(),
-//				totalHours: totalHours,
-//				totalSeconds: totalHours * 3600,
-//				appUsage: detailedData.appUsage,
-//				categoryUsage: detailedData.categoryUsage
-//			)
-//
-//			do {
-//				let jsonData = try JSONEncoder().encode(screenTimeData)
-//				let timestamp = Int(Date().timeIntervalSince1970)
-//				let key = "screentime_\(timestamp)"
-//				UserDefaults.standard.set(jsonData, forKey: key)
-////				sharedDefaults.set(jsonData, forKey: key)
-//				print("✅ Screen time data stored in UserDefaults with key: \(key)")
-//
-////				for key in UserDefaults.standard.dictionaryRepresentation().keys where key.hasPrefix("screentime_") {
-////					print("🗂️ Found screen time key: \(key)")
-////					printAllStoredScreenTimeData()
-////				}
-//				printLatestScreenTimeData()
-//
-//			} catch {
-//				print("❌ Failed to encode screen time data: \(error)")
-//			}
-//	}
-
 }
 
 struct detailedReport: DeviceActivityReportScene {
@@ -100,12 +52,52 @@ struct detailedReport: DeviceActivityReportScene {
 			totalHours: hours,
 			totalSeconds: hours * 3600,
 			appUsage: detailedData.appUsage,
-			categoryUsage: detailedData.categoryUsage
+			categoryUsage: detailedData.categoryUsage,
+            dailyHistory: []
 		)
 		return screenTimeData
-
-
 	}
+}
 
+struct TimeGraphReport: DeviceActivityReportScene {
+    let context: DeviceActivityReport.Context = .timeGraph
+    let content: ([DailyScreenTime]) -> TimeGraphView
+    func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> [DailyScreenTime] {
+        let suiteName = "group.com.data.bettr"
+        guard let sharedDefaults = UserDefaults(suiteName: suiteName),
+              let rawData = sharedDefaults.data(forKey: "dailyScreenTime"),
+              let decoded = try? JSONDecoder().decode([DailyScreenTime].self, from: rawData)
+        else {
+            return []
+        }
+        
+        // 🪵 DEBUG: Print all decoded screen time entries
+        print("✅ Loaded \(decoded.count) entries from UserDefaults:")
+        for entry in decoded {
+            let formatted = DateFormatter()
+            formatted.dateStyle = .medium
+            formatted.timeStyle = .none
+            print("📅 \(formatted.string(from: entry.date)): \(entry.totalHours) hours")
+        }
 
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        // Create an array of the last 7 days, including today
+        let last7Days = (0..<7).map { offset -> Date in
+            return calendar.date(byAdding: .day, value: -offset, to: today)!
+        }
+
+        // Fill in screen time or 0.0 if not present for that day
+        let result: [DailyScreenTime] = last7Days.map { date in
+            if let existing = decoded.first(where: { calendar.isDate($0.date, inSameDayAs: date) }) {
+                return DailyScreenTime(date: date, totalHours: existing.totalHours)
+            } else {
+                return DailyScreenTime(date: date, totalHours: 0.0)
+            }
+        }
+
+        // Return sorted from oldest to newest (left to right on graph)
+        return result.sorted { $0.date < $1.date }
+    }
 }

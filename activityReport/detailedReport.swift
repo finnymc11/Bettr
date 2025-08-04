@@ -1,5 +1,5 @@
 //
-//  chartView.swift
+//  detailedReport.swift
 //  activityReport
 //
 //  Created by CJ Balmaceda on 7/16/25.
@@ -10,7 +10,6 @@ import DeviceActivity
 import SwiftUI
 
 struct HorizontalBarChartView: View {
-	// Sample data: label and value
 	let data: ScreenTimeData
 	let showApps: Bool
 
@@ -20,7 +19,6 @@ struct HorizontalBarChartView: View {
 			.map { (label: $0.key, value: $0.value) }
 	}
 
-	// Max value to normalize bar length
 	var maxValue: Double {
 		usageData.map { $0.value }.max() ?? 1
 	}

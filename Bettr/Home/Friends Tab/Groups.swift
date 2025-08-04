@@ -445,10 +445,10 @@ struct GroupSettings: View {
                                 .tint(.green)
                             Toggle("Private Group", isOn: $isPrivate)
                                 .tint(.green)
-                                .onChange(of: isPrivate) { newValue in
+                                .onChange(of: isPrivate) {
                                     if let docID = groupDocID {
                                         Firestore.firestore().collection("groups").document(docID).updateData([
-                                            "private": newValue
+                                            "private": isPrivate
                                         ]) { error in
                                             if let error = error {
                                                 print("Failed to update private setting: \(error.localizedDescription)")

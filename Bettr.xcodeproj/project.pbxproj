@@ -149,7 +149,7 @@
 		FBEF29852E283B30004BA6E7 /* Exceptions for "activityReport" folder in "Bettr" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				chartView.swift,
+				detailedReport.swift,
 				progressBarView.swift,
 			);
 			target = 928A70CA2E0753E2005E93FE /* Bettr */;
